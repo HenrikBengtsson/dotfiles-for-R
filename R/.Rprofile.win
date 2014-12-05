@@ -1,0 +1,7 @@
+# Make browseURL() on files works in more cases (also via Rscript)
+if (.Platform$OS.type == "windows") {
+  options(browser=function(...) R.utils::shell.exec2(...))
+}
+
+
+

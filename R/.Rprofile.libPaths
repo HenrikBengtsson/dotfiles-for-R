@@ -1,0 +1,25 @@
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Setup package libraries
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+local({
+  # User-specific library
+  pathU <- Sys.getenv("R_LIBS_USER")
+  if (nzchar(pathU)) {
+    # Prepend CRAN specific library
+#    paths <- sprintf("%s_%s", pathU, c("CRAN", "BioCsoft"))
+#    .libPaths(c(paths, .libPaths()))
+
+    # Prepend user-specific library
+    path <- pathU
+    if (!file.exists(path)) dir.create(path, recursive=TRUE)
+    .libPaths(c(path, .libPaths()))
+
+    # Prioritize CRAN-mirror library?
+    if (Sys.getenv("R_USE_CRAN") == "TRUE") {
+      log("  R_USE_CRAN=TRUE")
+      .libPaths(c(path, .libPaths()))
+      logf("  Prepended library: %s", path, force=TRUE)
+      logf("  R.utils v%s", utils::packageVersion("R.utils"), force=TRUE)
+    }
+  }
+})
