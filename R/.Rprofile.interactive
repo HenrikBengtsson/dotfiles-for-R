@@ -4,7 +4,7 @@
 if (interactive()) {
   # Save command-line history upon exit
   .Last <- function() {
-    if (interactive()) utils::savehistory()
+    if (interactive()) try(utils::savehistory(), silent=TRUE)
   }
 
   # TAB-completions, cf.
