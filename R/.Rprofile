@@ -20,10 +20,7 @@
 # SOURCE/ISSUES: https://github.com/HenrikBengtsson/dotfiles
 ###########################################################################
 local({
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Startup utility functions
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 log <- function(..., collapse="\n", force=FALSE) {
   args <- commandArgs()
   if (is.element("--slave", args)) return(invisible())
@@ -38,42 +35,26 @@ logf <- function(..., collapse="\n", force=FALSE)
 logp <- function(expr, ...)
   log(utils::capture.output(print(expr)), ...)
 
+startupApply <- function(prefix, FUN, ...) {
+  pattern <- sprintf("%s[.][a-zA-Z0-9]+$", prefix)
+  files1 <- dir(path=".", pattern=pattern, all.files=TRUE, full.names=FALSE)
+  files2 <- dir(path="~", pattern=pattern, all.files=TRUE, full.names=FALSE)
+  files2 <- setdiff(files2, files1)
+  files <- c(files1, file.path("~", files2))
+  for (file in files) {
+    logf(" %s...", file)
+    FUN(file, ...)
+    logf(" %s...done", file)
+  }
+}
 
 log("~/.Rprofile...")
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # (i) Load custom .Renviron.* files, e.g. ~/.Renviron.private
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-local({
-  pattern <- "[.]Renviron[.][a-zA-Z0-9]+$"
-  files1 <- dir(path=".", pattern=pattern, all.files=TRUE, full.names=FALSE)
-  files2 <- dir(path="~", pattern=pattern, all.files=TRUE, full.names=FALSE)
-  files2 <- setdiff(files2, files1)
-  files <- c(files1, file.path("~", files2))
-  for (file in files) {
-    logf(" %s...", file)
-    readRenviron(file)
-    logf(" %s...done", file)
-  }
-})
+startupApply("[.]Renviron", FUN=readRenviron)
 
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # (ii) Load custom .Rprofile.* files, e.g. ~/.Rprofile.repos
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-local({
-  pattern <- "[.]Rprofile[.][a-zA-Z0-9]+$"
-  files1 <- dir(path=".", pattern=pattern, all.files=TRUE, full.names=FALSE)
-  files2 <- dir(path="~", pattern=pattern, all.files=TRUE, full.names=FALSE)
-  files2 <- setdiff(files2, files1)
-  files <- c(files1, file.path("~", files2))
-  for (file in files) {
-    logf(" %s...", file)
-    source(file, local=FALSE)
-    logf(" %s...done", file)
-  }
-})
-
+startupApply("[.]Rprofile", FUN=source)
 
 log("~/.Rprofile...done")
 
