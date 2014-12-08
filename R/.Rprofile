@@ -54,7 +54,9 @@ startupApply <- function(prefix, FUN, ...) {
 log("~/.Rprofile...")
 
 # (i) Load custom .Renviron.* files, e.g. ~/.Renviron.private
-startupApply("[.]Renviron", FUN=readRenviron)
+if (exists("readRenviron", envir=baseenv(), mode="function")) {
+  startupApply("[.]Renviron", FUN=readRenviron)
+}
 
 # (ii) Load custom .Rprofile.* files, e.g. ~/.Rprofile.repos
 startupApply("[.]Rprofile", FUN=source)
