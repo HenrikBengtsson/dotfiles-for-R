@@ -39,7 +39,7 @@ startupApply <- function(prefix, FUN, ...) {
   ol <- Sys.getlocale("LC_COLLATE")
   on.exit(Sys.setlocale("LC_COLLATE", ol))
   Sys.setlocale("LC_COLLATE", "C")
-  pattern <- sprintf("%s[.][a-zA-Z0-9]+$", prefix)
+  pattern <- sprintf("%s[.][-_a-zA-Z0-9]+$", prefix)
   files1 <- dir(path=".", pattern=pattern, all.files=TRUE, full.names=FALSE)
   files2 <- dir(path="~", pattern=pattern, all.files=TRUE, full.names=FALSE)
   files2 <- setdiff(files2, files1)
