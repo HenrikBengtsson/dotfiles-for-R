@@ -63,8 +63,8 @@ startupApply("[.]Rprofile", FUN=source)
 
 # (iii) Check for common mistakes?
 if (isTRUE(getOption(".Rprofile-check", TRUE))) {
-  if (isTRUE(getOption(".Rprofile-check-encoding", TRUE) && getOption("encoding", "native.enc") != "native.enc")) {
-    msg <- (sprintf("POTENTIAL PROBLEM: Option 'encoding' seems to have been set (to '%s') during startup. Changing this from the default 'native.enc' is known to have caused problems, e.g. installation of some packages fails. To disable this warning, set option '.Rprofile-check-encoding' to FALSE.",  getOption("encoding")))
+  if (isTRUE(getOption(".Rprofile-check-encoding", TRUE) && !interactive() && getOption("encoding", "native.enc") != "native.enc")) {
+    msg <- (sprintf("POTENTIAL PROBLEM: Option 'encoding' seems to have been set (to '%s') during startup, cf. Startup.  Changing this from the default 'native.enc' is known to have caused problems, particularly in non-interactive sessions, e.g. installation of some packages fails. To disable this warning, set option '.Rprofile-check-encoding' to FALSE, or set the encoding conditionally, e.g. if (interactive()) options(encoding='UTF-8').",  getOption("encoding")))
     warning(msg)
   }
 }
