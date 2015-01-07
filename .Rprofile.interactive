@@ -28,9 +28,9 @@ if (interactive()) {
     rm(list="use", envir=globalenv())
   }
 
-  rfile <- function(...) {
+  rfile <- function(..., envir=parent.frame()) {
     R.utils::use("R.rsp", how="load")
-    R.rsp::rfile(...)
+    R.rsp::rfile(..., envir=envir)
   }
 } # if (interactive())
 
