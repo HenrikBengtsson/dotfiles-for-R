@@ -1,0 +1,2 @@
+# Use regular single quotes
+options(useFancyQuotes=FALSE)
