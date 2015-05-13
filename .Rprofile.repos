@@ -37,5 +37,8 @@ local({
   names <- names(repos)
   repos <- repos[!(nzchar(names) & duplicated(names))]
 
+  # Drop R-Forge
+  repos <- repos[!grepl("R-Forge", names(repos))]
+  
   options(repos=repos)
 })

@@ -1,2 +1,8 @@
 # Use regular single quotes
 options(useFancyQuotes=FALSE)
+
+## Enable parallel processing for R.filesets::dsApply()
+options("R.filesets/parallel"="BiocParallel")
+
+## ROBUSTNESS: Enable strict full-names translator checks
+options("R.filesets::onRemapping"="error")
