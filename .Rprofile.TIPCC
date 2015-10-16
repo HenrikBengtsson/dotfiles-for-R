@@ -2,7 +2,15 @@
 options(useFancyQuotes=FALSE)
 
 ## Enable parallel processing for R.filesets::dsApply()
-options("R.filesets/parallel"="BiocParallel")
+options("R.filesets/parallel"="BiocParallel::BatchJobs")
 
 ## ROBUSTNESS: Enable strict full-names translator checks
 options("R.filesets::onRemapping"="error")
+
+## Quick access to system calls
+attach(name="CBC tools", list(
+  print.bang = function(x, ...) x(...),
+  qstat = structure(function() system("qstat"), class="bang"),
+  qme = structure(function() system("qme"), class="bang")
+))
+
