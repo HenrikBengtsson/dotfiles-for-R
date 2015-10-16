@@ -3,10 +3,12 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 local({
   ## Update regularly
-  if (getRversion() < "3.2.0") {
-    Sys.setenv(R_BIOC_VERSION="3.0")
-  } else {
+  if (getRversion() >= "3.2.2") {
+    Sys.setenv(R_BIOC_VERSION="3.2")
+  } else if (getRversion() >= "3.2.0") {
     Sys.setenv(R_BIOC_VERSION="3.1")
+  } else {
+    Sys.setenv(R_BIOC_VERSION="3.0")
   }
 
   knownRepos <- function() {
@@ -21,12 +23,12 @@ local({
   } # knownRepos()
 
   repos <- c(
-    CRAN="http://cran.r-project.org",
+    CRAN="https://cran.r-project.org",
+    CRANextra = if (.Platform$OS.type == "windows") {
+      "https://www.stats.ox.ac.uk/pub/RWin"
+    },
     "R-Forge"="http://R-Forge.R-project.org",
     Omegahat="http://www.omegahat.org/R",
-    CRANextra = if (.Platform$OS.type == "windows") {
-      "http://www.stats.ox.ac.uk/pub/RWin"
-    },
     knownRepos(),
     AROMA="http://braju.com/R",
     getOption("repos")
