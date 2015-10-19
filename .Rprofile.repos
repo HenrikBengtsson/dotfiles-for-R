@@ -33,6 +33,9 @@ local({
     AROMA="http://braju.com/R",
     getOption("repos")
   )
+  if (getRversion() < "3.2.2") {
+    repos <- gsub("https://", "http://", repos, fixed=TRUE)
+  }
 
   # Keep only unique existing ones
   repos <- repos[!is.na(repos)]
