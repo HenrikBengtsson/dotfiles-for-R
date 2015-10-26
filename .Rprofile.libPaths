@@ -2,13 +2,18 @@
 # Setup package libraries
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 local({
+  if ("--testlibs" %in% commandArgs()) {
+    # Prepend CRAN specific library
+    path <- sprintf("%s_%s", .libPaths()[1], "release")
+    .libPaths(c(path, .libPaths()))
+    message("Using libraries of release versions of packages;")
+    message(paste(utils::capture.output(.libPaths()), collapse="\n"))
+    return()
+  }
+  
   # User-specific library
   pathU <- Sys.getenv("R_LIBS_USER")
   if (nzchar(pathU)) {
-    # Prepend CRAN specific library
-#    paths <- sprintf("%s_%s", pathU, c("CRAN", "BioCsoft"))
-#    .libPaths(c(paths, .libPaths()))
-
     # Prepend user-specific library
     path <- pathU
     if (!utils::file_test('-d', path)) {
