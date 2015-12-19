@@ -12,7 +12,9 @@ if (interactive()) {
   utils::rc.settings(ipck=TRUE)
 
   # Active automatic archiving
-  options("R.archive::devEval"=TRUE)
+  if (require("R.archive")) {
+    setArchiveOption("devEval", TRUE)
+  }
 
   # Setup built-in HTTP daemon
   # Always only the HTML help on the same port
