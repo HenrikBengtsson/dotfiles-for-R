@@ -12,7 +12,7 @@ if (interactive()) {
   utils::rc.settings(ipck=TRUE)
 
   # Active automatic archiving
-  if (require("R.archive")) {
+  if (suppressWarnings(require("R.archive"))) {
     setArchiveOption("devEval", TRUE)
   }
 
