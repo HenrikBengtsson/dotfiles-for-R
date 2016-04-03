@@ -1,10 +1,10 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # INTERACTIVE MODE ONLY
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-if (interactive()) {
+if (base::interactive()) {
   # Save command-line history upon exit
   .Last <- function() {
-    if (interactive()) try(utils::savehistory(), silent=TRUE)
+    if (base::interactive()) try(utils::savehistory(), silent=TRUE)
   }
 
   # TAB-completions, cf.
@@ -12,7 +12,7 @@ if (interactive()) {
   utils::rc.settings(ipck=TRUE)
 
   # Active automatic archiving
-  if (require("R.archive")) {
+  if (suppressWarnings(require("R.archive", quiet=TRUE))) {
     setArchiveOption("devEval", TRUE)
   }
 
@@ -34,6 +34,12 @@ if (interactive()) {
     R.utils::use("R.rsp", how="load")
     R.rsp::rfile(..., envir=envir)
   }
+
+  options(
+    warnPartialMatchDollar=TRUE,
+    warnPartialMatchArgs=TRUE,
+    warnPartialMatchAttr=TRUE
+  )
 } # if (interactive())
 
 

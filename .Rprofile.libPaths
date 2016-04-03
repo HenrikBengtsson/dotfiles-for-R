@@ -29,4 +29,6 @@ local({
       logf("  R.utils v%s", utils::packageVersion("R.utils"), force=TRUE)
     }
   }
+
+#  .libPaths("~/R/covr-only")
 })
