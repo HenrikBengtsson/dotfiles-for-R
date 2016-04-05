@@ -1,6 +1,23 @@
-# Make browseURL() on files works in more cases (also via Rscript)
 if (.Platform$OS.type == "windows") {
+  ## Make browseURL() on files works in more cases (also via Rscript)
   options(browser=function(...) R.utils::shell.exec2(...))
+
+  ## Use new gcc-4.9.3 toolchain in R (>= 3.3.0) for Windows
+  ## (source: Bioconductor https://goo.gl/MMbGkg)
+  ## NOTE: This only works if `--no-init-file` is _not_ used.
+  if (getRversion() >= "3.3.0" && !nzchar(Sys.getenv("BINPREF"))) {
+    local({
+      ## Find out how R was built
+      ## https://twitter.com/opencpu/status/717411491364798464
+      Rbin <- file.path(R.home("bin"), "R")
+      cby <- system2(Rbin, "--vanilla CMD config COMPILED_BY", stdout=TRUE)
+      if (cby %in% c("gcc-4.9.3")) {
+        path <- "C:/Rtools/mingw_$(WIN)/bin/"
+        message("NOTE: Setting BINPREF=", path)
+        Sys.setenv(BINPREF=path)
+      }
+    })
+  }
 }
 
 
