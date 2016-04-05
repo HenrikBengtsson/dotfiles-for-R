@@ -13,7 +13,7 @@ if (.Platform$OS.type == "windows") {
       cby <- system2(Rbin, "--vanilla CMD config COMPILED_BY", stdout=TRUE)
       if (cby %in% c("gcc-4.9.3")) {
         path <- "C:/Rtools/mingw_$(WIN)/bin/"
-        message("NOTE: Setting BINPREF=", path)
+        message(sprintf("NOTE: Setting BINPREF=%s (via .Rprofile)", path))
         Sys.setenv(BINPREF=path)
       }
     })
