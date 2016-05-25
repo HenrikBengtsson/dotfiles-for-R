@@ -25,7 +25,7 @@ local({
   } # knownRepos()
 
   repos <- c(
-    CRAN="https://cran.r-project.org",
+    CRAN="https://cloud.r-project.org",
     CRANextra = if (.Platform$OS.type == "windows") {
       "https://www.stats.ox.ac.uk/pub/RWin"
     },
