@@ -2,9 +2,9 @@
 # DESCRIPTION:
 # This generic .Rprofile file will:
 #  (i) Set system environment variables as given in additional
-#      .Renviron.<custom> files located in the current working
+#      .Renviron.d/<custom> files located in the current working
 #      directory ('.') and/or in the home directory ('~').
-# (ii) Source additional .Rprofile.<custom> files located in
+# (ii) Source additional .Rprofile.d/<custom> files located in
 #      the current working directory ('.') and/or in the home
 #      directory ('~').
 #
@@ -12,8 +12,8 @@
 # 1. Put this .Rprofile in the current working directory ('.'),
 #    or in your home directory ('~').  The home directory is
 #    given by normalizePath("~").
-# 2. Add additional .Renviron.<custom> and .Rprofile.<custom> files,
-#    e.g. ~/.Renviron.private and ~/.Rprofile.repos.
+# 2. Add additional .Renviron.d/<custom> and .Rprofile.d/<custom> files,
+#    e.g. ~/.Renviron.d/private and ~/.Rprofile.d/os=win.
 #
 # AUTHOR: Henrik Bengtsson
 # LICENSE: GPL (>= 2.1)
