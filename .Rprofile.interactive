@@ -25,6 +25,8 @@ if (base::interactive()) {
   # Try to start HTML help server
   try(tools::startDynamicHelp())
 
+  options(help_type="html")
+
   use <- function(...) {
     R.utils::use(...)
     rm(list="use", envir=globalenv())
@@ -41,6 +43,5 @@ if (base::interactive()) {
     warnPartialMatchAttr=TRUE
   )
 } # if (interactive())
-
 
 ## options("R.rsp/HttpDaemon/RspVersion"="1.0.0")
