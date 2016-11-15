@@ -57,6 +57,7 @@ startupApply <- function(prefix, FUN, ...) {
   ## Parse <key>=<value> and keep only matching ones
   sysinfo <- Sys.info()
   sysinfo[["os"]] <- .Platform$OS.type
+  sysinfo[["interactive"]] <- interactive()
   for (key in names(sysinfo)) {
     pattern <- sprintf(".*[^a-z]+%s=([^/=]*).*", key)
     idxs <- grep(pattern, files, fixed=FALSE)
@@ -69,13 +70,12 @@ startupApply <- function(prefix, FUN, ...) {
   }
 
   for (file in files) {
-    logf(" %s...", file)
+    logf(" - %s", file)
     FUN(file, ...)
-    logf(" %s...done", file)
   }
 }
 
-log("~/.Rprofile...")
+log("~/.Rprofile ...")
 
 # (i) Load custom .Renviron.* files, e.g. ~/.Renviron.private
 if (exists("readRenviron", envir=baseenv(), mode="function")) {
@@ -93,6 +93,6 @@ if (isTRUE(getOption(".Rprofile-check", TRUE))) {
   }
 }
 
-log("~/.Rprofile...done")
+log("~/.Rprofile ... done")
 
 }) # local()
