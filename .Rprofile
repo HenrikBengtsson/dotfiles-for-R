@@ -48,6 +48,7 @@ startupApply <- function(prefix, FUN, ...) {
   path <- file.path("~", sprintf("%s.d", prefix))
   files4 <- dir(path=path, pattern="[^~]$", all.files=TRUE, full.names=TRUE)
   files <- c(files1, files2, files3, files4)
+  files <- files[file.exists(files)]
   files <- files[!file.info(files)$isdir]
   files <- normalizePath(files)
   files <- unique(files)
