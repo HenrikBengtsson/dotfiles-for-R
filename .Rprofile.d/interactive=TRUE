@@ -1,47 +1,33 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # INTERACTIVE MODE ONLY
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-if (base::interactive()) {
-  # Save command-line history upon exit
-  .Last <- function() {
-    if (base::interactive()) try(utils::savehistory(), silent=TRUE)
-  }
+# Save command-line history upon exit
+.Last <- function() {
+  if (base::interactive()) try(utils::savehistory(), silent=TRUE)
+}
 
-  # TAB-completions, cf.
-  # '[Bioc-devel] tab completion for library()' on 2013-11-13.
-  utils::rc.settings(ipck=TRUE)
+# TAB-completions, cf.
+# '[Bioc-devel] tab completion for library()' on 2013-11-13.
+utils::rc.settings(ipck=TRUE)
 
-  # Active automatic archiving
-  if (suppressWarnings(require("R.archive", quiet=TRUE))) {
-    setArchiveOption("devEval", TRUE)
-  }
+# Active automatic archiving
+if (suppressWarnings(require("R.archive", quiet=TRUE))) {
+  setArchiveOption("devEval", TRUE)
+}
 
-  # Setup built-in HTTP daemon
-  # Always only the HTML help on the same port
-  local({
-    port <- sum(c(1e4,100)*as.double(R.version[c("major", "minor")]))
-    options(help.ports=port+0:9)
-  })
-  # Try to start HTML help server
-  try(tools::startDynamicHelp())
+# Setup built-in HTTP daemon
+# Always only the HTML help on the same port
+local({
+  port <- sum(c(1e4,100)*as.double(R.version[c("major", "minor")]))
+  options(help.ports=port+0:9)
+})
+# Try to start HTML help server
+try(tools::startDynamicHelp())
 
-  options(help_type="html")
+options(help_type="html")
 
-  use <- function(...) {
-    R.utils::use(...)
-    rm(list="use", envir=globalenv())
-  }
-
-  rfile <- function(..., envir=parent.frame()) {
-    R.utils::use("R.rsp", how="load")
-    R.rsp::rfile(..., envir=envir)
-  }
-
-  options(
-    warnPartialMatchDollar=TRUE,
-    warnPartialMatchArgs=TRUE,
-    warnPartialMatchAttr=TRUE
-  )
-} # if (interactive())
-
-## options("R.rsp/HttpDaemon/RspVersion"="1.0.0")
+options(
+  warnPartialMatchDollar=TRUE,
+  warnPartialMatchArgs=TRUE,
+  warnPartialMatchAttr=TRUE
+)
