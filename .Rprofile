@@ -48,10 +48,26 @@ startupApply <- function(prefix, FUN, ...) {
   path <- file.path("~", sprintf("%s.d", prefix))
   files4 <- dir(path=path, pattern="[^~]$", recursive=TRUE, all.files=TRUE, full.names=TRUE)
   files <- c(files1, files2, files3, files4)
+  files <- files[basename(files) != ".Rhistory"]
   files <- files[file.exists(files)]
   files <- files[!file.info(files)$isdir]
   files <- normalizePath(files)
   files <- unique(files)
+
+  ## Parse <key>=<value> and keep only matching ones
+  sysinfo <- Sys.info()
+  sysinfo[["os"]] <- .Platform$OS.type
+  for (key in names(sysinfo)) {
+    pattern <- sprintf(".*[^a-z]+%s=([^/=]*).*", key)
+    idxs <- grep(pattern, files, fixed=FALSE)
+    if (length(idxs) > 0) {
+      value <- sysinfo[[key]]
+      values <- gsub(pattern, "\\1", files[idxs])
+      drop <- idxs[values != value]
+      if (length(drop) > 0) files <- files[-drop]
+    }
+  }
+
   for (file in files) {
     logf(" %s...", file)
     FUN(file, ...)
