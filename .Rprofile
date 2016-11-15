@@ -39,11 +39,18 @@ startupApply <- function(prefix, FUN, ...) {
   ol <- Sys.getlocale("LC_COLLATE")
   on.exit(Sys.setlocale("LC_COLLATE", ol))
   Sys.setlocale("LC_COLLATE", "C")
-  pattern <- sprintf("%s[.][-_a-zA-Z0-9]+$", prefix)
-  files1 <- dir(path=".", pattern=pattern, all.files=TRUE, full.names=FALSE)
-  files2 <- dir(path="~", pattern=pattern, all.files=TRUE, full.names=FALSE)
-  files2 <- setdiff(files2, files1)
-  files <- c(files1, file.path("~", files2))
+  prefixP <- gsub(".", "[.]", prefix, fixed=TRUE)
+  pattern <- sprintf("%s[.][-_a-zA-Z0-9]+$", prefixP)
+  files1 <- dir(path=".", pattern=pattern, all.files=TRUE, full.names=TRUE)
+  path <- file.path(".", sprintf("%s.d", prefix))
+  files2 <- dir(path=path, pattern="[^~]$", all.files=TRUE, full.names=TRUE)
+  files3 <- dir(path="~", pattern=pattern, all.files=TRUE, full.names=TRUE)
+  path <- file.path("~", sprintf("%s.d", prefix))
+  files4 <- dir(path=path, pattern="[^~]$", all.files=TRUE, full.names=TRUE)
+  files <- c(files1, files2, files3, files4)
+  files <- files[!file.info(files)$isdir]
+  files <- normalizePath(files)
+  files <- unique(files)
   for (file in files) {
     logf(" %s...", file)
     FUN(file, ...)
@@ -55,11 +62,11 @@ log("~/.Rprofile...")
 
 # (i) Load custom .Renviron.* files, e.g. ~/.Renviron.private
 if (exists("readRenviron", envir=baseenv(), mode="function")) {
-  startupApply("[.]Renviron", FUN=readRenviron)
+  startupApply(".Renviron", FUN=readRenviron)
 }
 
 # (ii) Load custom .Rprofile.* files, e.g. ~/.Rprofile.repos
-startupApply("[.]Rprofile", FUN=source)
+startupApply(".Rprofile", FUN=source)
 
 # (iii) Check for common mistakes?
 if (isTRUE(getOption(".Rprofile-check", TRUE))) {
