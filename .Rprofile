@@ -43,10 +43,10 @@ startupApply <- function(prefix, FUN, ...) {
   pattern <- sprintf("%s[.][-_a-zA-Z0-9]+$", prefixP)
   files1 <- dir(path=".", pattern=pattern, all.files=TRUE, full.names=TRUE)
   path <- file.path(".", sprintf("%s.d", prefix))
-  files2 <- dir(path=path, pattern="[^~]$", all.files=TRUE, full.names=TRUE)
+  files2 <- dir(path=path, pattern="[^~]$", recursive=TRUE, all.files=TRUE, full.names=TRUE)
   files3 <- dir(path="~", pattern=pattern, all.files=TRUE, full.names=TRUE)
   path <- file.path("~", sprintf("%s.d", prefix))
-  files4 <- dir(path=path, pattern="[^~]$", all.files=TRUE, full.names=TRUE)
+  files4 <- dir(path=path, pattern="[^~]$", recursive=TRUE, all.files=TRUE, full.names=TRUE)
   files <- c(files1, files2, files3, files4)
   files <- files[file.exists(files)]
   files <- files[!file.info(files)$isdir]
