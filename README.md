@@ -1,5 +1,9 @@
 # dotfiles-for-R
 
-This repository provides examples on what my (@HenrikBengtsson) `.Rprofile` and `.Renviron` files look like.
+This repository provides examples on what my (@HenrikBengtsson) R startup files look like.  I'm making use of the [startup] package.  By calling
+```r
+startup::startup()
+```
+in my `.Rprofile` I can keep my startup code and environment variables organized in in individual files in directories `.Rprofile.d` and `.Renviron.d`.
 
-My R dotfiles are actually located in individual files in directories `.Rprofile.d/` and `.Renviron.d/`, respectively.  For this to work, you need to keep `.Rprofile` as is, because it is responsible for importing the content of those to directories.
+[startup]: https://cran.r-project.org/package=startup
