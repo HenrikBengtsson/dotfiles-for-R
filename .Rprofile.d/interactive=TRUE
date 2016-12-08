@@ -3,7 +3,10 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Save command-line history upon exit
 .Last <- function() {
-  if (base::interactive()) try(utils::savehistory(), silent=TRUE)
+  if (base::interactive()) {
+    file <- Sys.getenv("R_HISTFILE", ".RHistory")
+    try(utils::savehistory(file), silent = TRUE)
+  }
 }
 
 # TAB-completions, cf.
