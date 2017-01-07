@@ -1,0 +1,34 @@
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Setup package libraries
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+local({
+  if ("--testlibs" %in% commandArgs()) {
+    # Prepend CRAN specific library
+    path <- sprintf("%s_%s", .libPaths()[1], "release")
+    .libPaths(c(path, .libPaths()))
+    message("Using libraries of release versions of packages;")
+    message(paste(utils::capture.output(.libPaths()), collapse="\n"))
+    return()
+  }
+  
+  # User-specific library
+  pathU <- Sys.getenv("R_LIBS_USER")
+  if (nzchar(pathU)) {
+    # Prepend user-specific library
+    path <- pathU
+    if (!utils::file_test('-d', path)) {
+      dir.create(path, recursive=TRUE, showWarnings=FALSE)
+    }
+    .libPaths(c(path, .libPaths()))
+
+    # Prioritize CRAN-mirror library?
+    if (Sys.getenv("R_USE_CRAN") == "TRUE") {
+      log("  R_USE_CRAN=TRUE")
+      .libPaths(c(path, .libPaths()))
+      logf("  Prepended library: %s", path, force=TRUE)
+      logf("  R.utils v%s", utils::packageVersion("R.utils"), force=TRUE)
+    }
+  }
+
+#  .libPaths("~/R/covr-only")
+})
