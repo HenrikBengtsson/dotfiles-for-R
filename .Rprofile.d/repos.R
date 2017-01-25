@@ -2,8 +2,12 @@
 # Setup a repositories
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 local({
-  ## Update regularly
-  if (getRversion() >= "3.3.0") {
+  ## Update manually
+  ## (should ideally be looked up dynamically, say,
+  ##  once a week, and cached)
+  if (getRversion() >= "3.3.2") {
+    Sys.setenv(R_BIOC_VERSION="3.4")
+  } else if (getRversion() >= "3.3.0") {
     Sys.setenv(R_BIOC_VERSION="3.3")
   } else if (getRversion() >= "3.2.2") {
     Sys.setenv(R_BIOC_VERSION="3.2")
