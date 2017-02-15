@@ -7,3 +7,4 @@ startup::startup()
 in my `.Rprofile` I can keep my startup code and environment variables organized in in individual files in directories `.Rprofile.d` and `.Renviron.d`.
 
 [startup]: https://cran.r-project.org/package=startup
+
