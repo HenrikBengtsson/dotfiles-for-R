@@ -2,7 +2,7 @@
 options(useFancyQuotes=FALSE)
 
 ## Use a local R.cache root directory on each compute node
-if (grepl("^n[0-9]+$", Sys.getenv("HOST"))) {
+if (grepl("^n[0-9]+$", Sys.getenv("HOSTNAME"))) {
   options("R.cache::rootPath"=sprintf("/scratch/%s/.Rcache", Sys.getenv("USER")))
 }
 
