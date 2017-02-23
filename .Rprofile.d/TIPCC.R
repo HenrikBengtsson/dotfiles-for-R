@@ -7,7 +7,8 @@ if (grepl("^n[0-9]+$", Sys.getenv("HOSTNAME"))) {
 }
 
 ## Enable parallel processing for R.filesets::dsApply()
-options("R.filesets/parallel"="BiocParallel::BatchJobs")
+## DEPRECATED: Use future::future_lapply() instead (2017-02-22)
+options("R.filesets/parallel" = "future")
 
 ## ROBUSTNESS: Enable strict full-names translator checks
 options("R.filesets::onRemapping"="error")
