@@ -5,7 +5,9 @@ local({
   ## Update manually
   ## (should ideally be looked up dynamically, say,
   ##  once a week, and cached)
-  if (getRversion() >= "3.3.2") {
+  if (getRversion() >= "3.4.0") {
+    Sys.setenv(R_BIOC_VERSION="3.5")
+  } else if (getRversion() >= "3.3.1") {
     Sys.setenv(R_BIOC_VERSION="3.4")
   } else if (getRversion() >= "3.3.0") {
     Sys.setenv(R_BIOC_VERSION="3.3")
@@ -36,7 +38,7 @@ local({
     "R-Forge"="http://R-Forge.R-project.org",
     Omegahat="http://www.omegahat.org/R",
     knownRepos(),
-    AROMA="http://braju.com/R",
+#    AROMA="http://braju.com/R",
     getOption("repos")
   )
   # Drop some
