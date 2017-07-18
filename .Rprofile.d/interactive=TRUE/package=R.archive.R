@@ -1,4 +1,4 @@
 # Active automatic archiving
-if (suppressWarnings(require("R.archive", quiet=TRUE))) {
+if (suppressWarnings(require("R.archive", quiet = TRUE))) {
   setArchiveOption("devEval", TRUE)
 }

@@ -7,17 +7,17 @@ local({
     path <- sprintf("%s_%s", .libPaths()[1], "release")
     .libPaths(c(path, .libPaths()))
     message("Using libraries of release versions of packages;")
-    message(paste(utils::capture.output(.libPaths()), collapse="\n"))
+    message(paste(utils::capture.output(.libPaths()), collapse = "\n"))
     return()
   }
-  
+
   # User-specific library
-  pathU <- Sys.getenv("R_LIBS_USER")
-  if (nzchar(pathU)) {
+  path_user <- Sys.getenv("R_LIBS_USER")
+  if (nzchar(path_user)) {
     # Prepend user-specific library
-    path <- pathU
+    path <- path_user
     if (!utils::file_test('-d', path)) {
-      dir.create(path, recursive=TRUE, showWarnings=FALSE)
+      dir.create(path, recursive = TRUE, showWarnings = FALSE)
     }
     .libPaths(c(path, .libPaths()))
 
@@ -25,8 +25,8 @@ local({
     if (Sys.getenv("R_USE_CRAN") == "TRUE") {
       log("  R_USE_CRAN=TRUE")
       .libPaths(c(path, .libPaths()))
-      logf("  Prepended library: %s", path, force=TRUE)
-      logf("  R.utils v%s", utils::packageVersion("R.utils"), force=TRUE)
+      logf("  Prepended library: %s", path, force = TRUE)
+      logf("  R.utils v%s", utils::packageVersion("R.utils"), force = TRUE)
     }
   }
 
