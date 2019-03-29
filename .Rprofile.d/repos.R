@@ -56,7 +56,8 @@ local({
   if (package_version(Sys.getenv("R_BIOC_VERSION")) >= "3.6") {
     repos <- repos[!grepl("BioCextra", names(repos))]
   }
-  
+
+  # Use HTTP when HTTPS is not supported
   if (getRversion() < "3.2.2" || startup::sysinfo()$wine) {
     repos <- gsub("https://", "http://", repos, fixed = TRUE)
   }
