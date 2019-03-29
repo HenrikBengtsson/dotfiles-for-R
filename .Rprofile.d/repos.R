@@ -2,21 +2,31 @@
 # Setup a repositories
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 local({
-  ## Update manually
-  ## (should ideally be looked up dynamically, say,
-  ##  once a week, and cached)
-  if (getRversion() >= "3.4.0") {
-    Sys.setenv(R_BIOC_VERSION = "3.5")
-  } else if (getRversion() >= "3.3.1") {
-    Sys.setenv(R_BIOC_VERSION = "3.4")
-  } else if (getRversion() >= "3.3.0") {
-    Sys.setenv(R_BIOC_VERSION = "3.3")
-  } else if (getRversion() >= "3.2.2") {
-    Sys.setenv(R_BIOC_VERSION = "3.2")
-  } else if (getRversion() >= "3.2.0") {
-    Sys.setenv(R_BIOC_VERSION = "3.1")
+  ## Update automatically or manually?
+  if (requireNamespace("BiocManager", quietly = TRUE)) {
+    Sys.setenv(R_BIOC_VERSION = as.character(BiocManager::version()))
   } else {
-    Sys.setenv(R_BIOC_VERSION = "3.0")
+    if (getRversion() >= "3.6.0") {
+      Sys.setenv(R_BIOC_VERSION = "3.9")
+    } else if (getRversion() >= "3.5.1") {
+      Sys.setenv(R_BIOC_VERSION = "3.8")
+    } else if (getRversion() >= "3.5.0") {
+      Sys.setenv(R_BIOC_VERSION = "3.7")
+    } else if (getRversion() >= "3.4.2") {
+      Sys.setenv(R_BIOC_VERSION = "3.6")
+    } else if (getRversion() >= "3.4.0") {
+      Sys.setenv(R_BIOC_VERSION = "3.5")
+    } else if (getRversion() >= "3.3.1") {
+      Sys.setenv(R_BIOC_VERSION = "3.4")
+    } else if (getRversion() >= "3.3.0") {
+      Sys.setenv(R_BIOC_VERSION = "3.3")
+    } else if (getRversion() >= "3.2.2") {
+      Sys.setenv(R_BIOC_VERSION = "3.2")
+    } else if (getRversion() >= "3.2.0") {
+      Sys.setenv(R_BIOC_VERSION = "3.1")
+    } else {
+      Sys.setenv(R_BIOC_VERSION = "3.0")
+    }
   }
 
   known_repos <- function() {
@@ -40,10 +50,14 @@ local({
     known_repos(),
     getOption("repos")
   )
+  
   # Drop some
-  repos <- repos[!grepl("(Omegahat|R-Forge)", names(repos))]
-
-  if (getRversion() < "3.2.2") {
+  repos <- repos[!grepl("(Omegahat|R-Forge|rforge.net)", names(repos))]
+  if (package_version(Sys.getenv("R_BIOC_VERSION")) >= "3.6") {
+    repos <- repos[!grepl("BioCextra", names(repos))]
+  }
+  
+  if (getRversion() < "3.2.2" || startup::sysinfo()$wine) {
     repos <- gsub("https://", "http://", repos, fixed = TRUE)
   }
 
@@ -54,6 +68,6 @@ local({
 
   # Drop R-Forge
   repos <- repos[!grepl("R-Forge", names(repos))]
-  
+
   options(repos = repos)
 })
