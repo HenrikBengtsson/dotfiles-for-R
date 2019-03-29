@@ -3,7 +3,7 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 local({
   ## Update automatically or manually?
-  if (requireNamespace("BiocManager", quietly = TRUE)) {
+  if (suppressMessages(requireNamespace("BiocManager", quietly = TRUE))) {
     ## WORKAROUND: BiocManager::version() can be very slow
     ## because it calls installed.packages().
     ## https://github.com/Bioconductor/BiocManager/pull/42
