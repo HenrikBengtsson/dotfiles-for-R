@@ -4,7 +4,16 @@
 local({
   ## Update automatically or manually?
   if (requireNamespace("BiocManager", quietly = TRUE)) {
-    Sys.setenv(R_BIOC_VERSION = as.character(BiocManager::version()))
+    ## WORKAROUND: BiocManager::version() can be very slow
+    ## because it calls installed.packages().
+    ## https://github.com/Bioconductor/BiocManager/pull/42
+    BiocManager_version <- function() {
+      tryCatch({
+        packageVersion("BiocVersion")[, 1:2]
+      }, error = function(ex) BiocManager:::.version_choose_best())
+    }
+    Sys.setenv(R_BIOC_VERSION = as.character(BiocManager_version()))
+    unloadNamespace("BiocManager")
   } else {
     if (getRversion() >= "3.6.0") {
       Sys.setenv(R_BIOC_VERSION = "3.9")
