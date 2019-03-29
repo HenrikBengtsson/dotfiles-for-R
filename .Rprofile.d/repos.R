@@ -5,7 +5,8 @@ local({
   ## Update automatically or manually?
   if (requireNamespace("BiocManager", quietly = TRUE)) {
     ## WORKAROUND: BiocManager::version() can be very slow
-    ## because it calls installed.packages()
+    ## because it calls installed.packages().
+    ## https://github.com/Bioconductor/BiocManager/pull/42
     BiocManager_version <- function() {
       tryCatch({
         packageVersion("BiocVersion")[, 1:2]
