@@ -12,4 +12,4 @@ rng_tracker <- local({
 })
 })
 
-addTaskCallback(rng_tracker, name = "RNG tracker")
+invisible(addTaskCallback(rng_tracker, name = "RNG tracker"))
