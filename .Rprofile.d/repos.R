@@ -2,42 +2,45 @@
 # Setup a repositories
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 local({
-  ## Update automatically or manually?
-  if (suppressMessages(requireNamespace("BiocManager", quietly = TRUE))) {
-    ## WORKAROUND: BiocManager::version() can be very slow
-    ## because it calls installed.packages().
-    ## https://github.com/Bioconductor/BiocManager/pull/42
-    BiocManager_version <- function() {
+  ## Bioconductor version
+  ver <- Sys.getenv("R_BIOC_VERSION")
+  if (!nzchar(ver)) {
+    ## Via BiocVersion?
+    tryCatch({
+      ver <- as.character(packageVersion("BiocVersion")[, 1:2])
+      Sys.setenv(R_BIOC_VERSION = ver)
+    }, error = identity)
+
+    # Via BiocManager?
+    if (!nzchar(ver)) {
+      ## WORKAROUND: BiocManager::version() can be very slow
+      ## because it calls installed.packages().
+      ## https://github.com/Bioconductor/BiocManager/pull/42
       tryCatch({
-        packageVersion("BiocVersion")[, 1:2]
-      }, error = function(ex) BiocManager:::.version_choose_best())
+        ver <- as.character(BiocManager:::.version_choose_best())
+        Sys.setenv(R_BIOC_VERSION = ver)
+        unloadNamespace("BiocManager")
+      }, error = identity)
     }
-    Sys.setenv(R_BIOC_VERSION = as.character(BiocManager_version()))
-    unloadNamespace("BiocManager")
-  } else {
-    if (getRversion() >= "3.6.0") {
-      Sys.setenv(R_BIOC_VERSION = "3.9")
-    } else if (getRversion() >= "3.5.1") {
-      Sys.setenv(R_BIOC_VERSION = "3.8")
-    } else if (getRversion() >= "3.5.0") {
-      Sys.setenv(R_BIOC_VERSION = "3.7")
-    } else if (getRversion() >= "3.4.2") {
-      Sys.setenv(R_BIOC_VERSION = "3.6")
-    } else if (getRversion() >= "3.4.0") {
-      Sys.setenv(R_BIOC_VERSION = "3.5")
-    } else if (getRversion() >= "3.3.1") {
-      Sys.setenv(R_BIOC_VERSION = "3.4")
-    } else if (getRversion() >= "3.3.0") {
-      Sys.setenv(R_BIOC_VERSION = "3.3")
-    } else if (getRversion() >= "3.2.2") {
-      Sys.setenv(R_BIOC_VERSION = "3.2")
-    } else if (getRversion() >= "3.2.0") {
-      Sys.setenv(R_BIOC_VERSION = "3.1")
-    } else {
-      Sys.setenv(R_BIOC_VERSION = "3.0")
+
+    if (!nzchar(ver)) {
+      rver <- getRversion()
+      ver <- {
+        if (rver >= "3.6.0") "3.9" else
+        if (rver >= "3.5.1") "3.8" else
+        if (rver >= "3.5.0") "3.7" else
+        if (rver >= "3.4.2") "3.6" else
+        if (rver >= "3.4.0") "3.5" else
+        if (rver >= "3.3.1") "3.4" else
+        if (rver >= "3.3.0") "3.3" else
+        if (rver >= "3.2.2") "3.2" else
+        if (rver >= "3.2.0") "3.1" else
+                             "3.0"
+      }
+      Sys.setenv(R_BIOC_VERSION = ver)
     }
   }
-
+  
   known_repos <- function() {
     p <- file.path(Sys.getenv("HOME"), ".R", "repositories")
     if (!file.exists(p)) p <- file.path(R.home("etc"), "repositories")
