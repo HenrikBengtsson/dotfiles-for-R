@@ -7,7 +7,7 @@ local({
   if (!nzchar(ver)) {
     ## Via BiocVersion?
     tryCatch({
-      ver <- as.character(packageVersion("BiocVersion")[, 1:2])
+      ver <- as.character(utils::packageVersion("BiocVersion")[, 1:2])
       Sys.setenv(R_BIOC_VERSION = ver)
     }, error = identity)
 
