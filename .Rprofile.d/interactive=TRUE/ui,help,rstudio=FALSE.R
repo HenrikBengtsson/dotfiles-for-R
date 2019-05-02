@@ -9,3 +9,5 @@ local({
 suppressMessages(try(tools::startDynamicHelp()))
 
 options(help_type = "html")
+
+if (nzchar(Sys.which("xdg-open"))) options(browser="xdg-open")
