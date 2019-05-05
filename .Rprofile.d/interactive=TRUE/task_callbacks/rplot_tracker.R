@@ -53,4 +53,4 @@ rplots_tracker <- local({
 })
 })
 
-addTaskCallback(rplots_tracker, name = "Rplots tracker")
+invisible(addTaskCallback(rplots_tracker, name = "Rplots tracker"))

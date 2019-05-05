@@ -30,4 +30,4 @@ options_tracker <- local({
 })
 })
 
-addTaskCallback(options_tracker, name = "Options tracker")
+invisible(addTaskCallback(options_tracker, name = "Options tracker"))
