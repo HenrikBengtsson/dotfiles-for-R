@@ -23,7 +23,7 @@ gui_dialogs <- local({
       opts <- defaults
       opts$menu.graphics <- TRUE
       oopts <- options(opts)
-      startup_warn("The implementation of gui_dialogs(\"on\") is ad hoc; it uses gui_dialogs(\"default\") and enables some obvious options, but it is not agile to operating system and available features in some GUI")
+      startup::warn("The implementation of gui_dialogs(\"on\") is ad hoc; it uses gui_dialogs(\"default\") and enables some obvious options, but it is not agile to operating system and available features in some GUI")
     }
     invisible(oopts)
   }
