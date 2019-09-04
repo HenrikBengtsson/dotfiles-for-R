@@ -15,7 +15,7 @@ local({
       }
       url <- dcf$URL
       if (is.null(url)) url <- NA_character_
-      message(sprintf("Package folder:\n - package: %s\n - devel version: %s\n - installed version: %s\n - R version: %s\n - URL: %s\n - R_LIBS_USER: %s\n - CRANCACHE_DIR: %s\n", pkg, pkg_ver, ver, getRversion(), url, Sys.getenv("R_LIBS_USER"), Sys.getenv("CRANCACHE_DIR")))
+      message(sprintf("Package folder:\n - package: %s\n - devel version: %s\n - installed version: %s\n - URL: %s\n - R version: %s (%s)\n - R_LIBS_USER: %s\n - CRANCACHE_DIR: %s\n", pkg, pkg_ver, ver, url, getRversion(), R.home(), Sys.getenv("R_LIBS_USER"), Sys.getenv("CRANCACHE_DIR")))
     }
   }
 })
