@@ -81,7 +81,7 @@ local({
   if (biocver >= "3.6") {
     repos <- repos[!grepl("BioCextra", names(repos))]
   }
-  if (biocver >= "3.9") {
+  if (biocver >= "3.7") {
     repos["BioCworkflows"] <- gsub("bioc$", "workflows", repos[["BioCsoft"]])
   }
 
