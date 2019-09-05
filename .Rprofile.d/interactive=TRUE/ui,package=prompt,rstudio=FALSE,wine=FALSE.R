@@ -1,9 +1,21 @@
-## Package: prompt
-## https://github.com/gaborcsardi/prompt
-## install.packages("memuse")
-## source("http://callr.org/install#gaborcsardi/prompt")
-## Required packages: memuse
-
+#' Change R's prompt when running on R for MS Windows via Wine
+#'
+#' Options that are set:
+#' * `prompt`
+#' * `width`
+#'
+#' @section Install required packages:
+#' ```r
+#' install.packages("memuse")
+#' source("https://callr.org/install#gaborcsardi/prompt")
+#' ```
+#'
+#' @author Henrik Bengtsson
+#'
+#' @references
+#' * https://github.com/gaborcsardi/prompt
+#'
+#' @import prompt memuse crayon grDevices profmem
 if (!exists("toggle", mode = "function", envir = getNamespace("prompt"))) {
   use_prompt <- local({
     env <- prompt:::prompt_env

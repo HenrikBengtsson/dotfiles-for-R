@@ -1,7 +1,14 @@
+#' Alert about newly produced Rplots*.pdf files
+#'
+#' Look for newly produced `Rplots*.pdf` files, which may be produced
+#' when running in batch mode or when screen devices are not available.
+#' See `?options` and option `'device'`.
+#'
+#' @author Henrik Bengtsson
+#'
+#' @import startup utils
+
 startup_toolbox({
-#' Look for newly produced Rplots*.pdf files, which may be produced
-#' when running in batch mode or when screen devices are not available
-#' See ?options and option 'device'
 rplots_tracker <- local({
   prev_files <- NULL
   
@@ -23,7 +30,7 @@ rplots_tracker <- local({
     if (length(prev_files) > 0) {
       dropped <- setdiff(names(prev_files), files)
       if (length(dropped) > 0) {
-        message("Graphics files removed: ",
+              message("Graphics files removed: ",
 	        paste(sQuote(dropped), collapse = ", "))
         prev_files <<- prev_files[files]
       }

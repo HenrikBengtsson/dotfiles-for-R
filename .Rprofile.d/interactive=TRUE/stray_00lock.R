@@ -1,3 +1,9 @@
+#' Warnings about stray package 00LOCK folders
+#'
+#' @author Henrik Bengtsson
+#'
+#' @imports startup
+#' @imports history
 local({
   #' Find 00LOCK-package folders
   #'

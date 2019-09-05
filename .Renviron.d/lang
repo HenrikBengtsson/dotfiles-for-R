@@ -1,3 +1,9 @@
-# Environment variables used by R
+#' Sets language-related environment variables
+#'
+#' Environment variables that are set:
+#' * `LANGUAGE`
+#'
+#' @author Henrik Bengtsson
+
 LANGUAGE=en
 

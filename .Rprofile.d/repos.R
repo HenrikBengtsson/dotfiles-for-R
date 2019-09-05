@@ -1,6 +1,12 @@
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Setup a repositories
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#' Configure option 'repos' for CRAN and Bioconductor
+#'
+#' Options that are set:
+#' * `repos`
+#'
+#' Environment variables that are set:
+#' * `R_BIOC_VERSION`
+#'
+#' @author Henrik Bengtsson
 local({
   ## Bioconductor version
   ver <- Sys.getenv("R_BIOC_VERSION")

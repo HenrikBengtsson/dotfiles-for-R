@@ -1,3 +1,11 @@
+#' Warn when the .Random.seed has changed
+#'
+#' Global variables that are monitored:
+#' * `.Random.seed`
+#'
+#' @author Henrik Bengtsson
+#'
+#' @import startup
 startup_toolbox({
 rng_tracker <- local({
   last <- .GlobalEnv$.Random.seed
