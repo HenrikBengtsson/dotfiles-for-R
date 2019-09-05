@@ -20,44 +20,43 @@ local({
   }
 
   ## Bioconductor version
-  biocver <- Sys.getenv("R_BIOC_VERSION")
-  if (!nzchar(biocver)) {
-    ## Via BiocVersion?
+  bioc_version <- function() {
+    biocver <- Sys.getenv("R_BIOC_VERSION")
+    if (nzchar(biocver)) return(biocver)
+    
+    ## Via the BiocVersion package?
     tryCatch({
       biocver <- as.character(utils::packageVersion("BiocVersion")[, 1:2])
-      Sys.setenv(R_BIOC_VERSION = biocver)
     }, error = identity)
+    if (nzchar(biocver)) return(biocver)
 
-    # Via BiocManager?
-    if (!nzchar(biocver)) {
-      ## WORKAROUND: BiocManager::version() can be very slow
-      ## because it calls installed.packages().
-      ## https://github.com/Bioconductor/BiocManager/pull/42
-      tryCatch({
-        biocver <- as.character(BiocManager:::.version_choose_best())
-        Sys.setenv(R_BIOC_VERSION = biocver)
-        unloadNamespace("BiocManager")
-      }, error = identity)
-    }
+    # Via the BiocManager package?
+    ## WORKAROUND: BiocManager::version() can be very slow
+    ## because it calls installed.packages().
+    ## https://github.com/Bioconductor/BiocManager/pull/42
+    tryCatch({
+      biocver <- as.character(BiocManager:::.version_choose_best())
+      unloadNamespace("BiocManager")
+    }, error = identity)
+    if (nzchar(biocver)) return(biocver)
 
-    if (!nzchar(biocver)) {
-      rver <- getRversion()
-      biocver <- {
-        if (rver >= "3.6.0") "3.9" else
-        if (rver >= "3.5.1") "3.8" else
-        if (rver >= "3.5.0") "3.7" else
-        if (rver >= "3.4.2") "3.6" else
-        if (rver >= "3.4.0") "3.5" else
-        if (rver >= "3.3.1") "3.4" else
-        if (rver >= "3.3.0") "3.3" else
-        if (rver >= "3.2.2") "3.2" else
-        if (rver >= "3.2.0") "3.1" else
-                             "3.0"
-      }
-      Sys.setenv(R_BIOC_VERSION = biocver)
+    # Ad hoc via the R version
+    rver <- getRversion()
+    biocver <- {
+      if (rver >= "3.6.0") "3.9" else
+      if (rver >= "3.5.1") "3.8" else
+      if (rver >= "3.5.0") "3.7" else
+      if (rver >= "3.4.2") "3.6" else
+      if (rver >= "3.4.0") "3.5" else
+      if (rver >= "3.3.1") "3.4" else
+      if (rver >= "3.3.0") "3.3" else
+      if (rver >= "3.2.2") "3.2" else
+      if (rver >= "3.2.0") "3.1" else
+                           "3.0"
     }
   }
 
+  Sys.setenv(R_BIOC_VERSION = bioc_version())
   biocver <- package_version(Sys.getenv("R_BIOC_VERSION"))
 
   repos <- c(
@@ -74,12 +73,15 @@ local({
   # Drop some
   repos <- repos[!grepl("(Omegahat|R-Forge|rforge.net)", names(repos))]
 
+  # Drop R-Forge
+  repos <- repos[!grepl("R-Forge", names(repos))]
+
   # Bioconductor tweaks
   if (biocver >= "3.6") {
     repos <- repos[!grepl("BioCextra", names(repos))]
   }
   if (biocver >= "3.9") {
-    repos["BioCworkflows"] <- gsub("bioc$", "workflows", repos["BioCsoft"])
+    repos["BioCworkflows"] <- gsub("bioc$", "workflows", repos[["BioCsoft"]])
   }
 
   # Use HTTP when HTTPS is not supported
@@ -91,9 +93,6 @@ local({
   repos <- repos[!is.na(repos)]
   names <- names(repos)
   repos <- repos[!(nzchar(names) & duplicated(names))]
-
-  # Drop R-Forge
-  repos <- repos[!grepl("R-Forge", names(repos))]
 
   options(repos = repos)
 })
