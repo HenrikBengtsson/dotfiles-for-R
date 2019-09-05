@@ -8,30 +8,41 @@
 #'
 #' @author Henrik Bengtsson
 local({
+  known_repos <- function() {
+    p <- file.path(Sys.getenv("HOME"), ".R", "repositories")
+    if (!file.exists(p)) p <- file.path(R.home("etc"), "repositories")
+    ns <- getNamespace("tools")
+    .read_repositories <- get(".read_repositories", envir = ns)
+    a <- .read_repositories(p)
+    repos <- a$URL
+    names(repos) <- rownames(a)
+    repos
+  }
+
   ## Bioconductor version
-  ver <- Sys.getenv("R_BIOC_VERSION")
-  if (!nzchar(ver)) {
+  biocver <- Sys.getenv("R_BIOC_VERSION")
+  if (!nzchar(biocver)) {
     ## Via BiocVersion?
     tryCatch({
-      ver <- as.character(utils::packageVersion("BiocVersion")[, 1:2])
-      Sys.setenv(R_BIOC_VERSION = ver)
+      biocver <- as.character(utils::packageVersion("BiocVersion")[, 1:2])
+      Sys.setenv(R_BIOC_VERSION = biocver)
     }, error = identity)
 
     # Via BiocManager?
-    if (!nzchar(ver)) {
+    if (!nzchar(biocver)) {
       ## WORKAROUND: BiocManager::version() can be very slow
       ## because it calls installed.packages().
       ## https://github.com/Bioconductor/BiocManager/pull/42
       tryCatch({
-        ver <- as.character(BiocManager:::.version_choose_best())
-        Sys.setenv(R_BIOC_VERSION = ver)
+        biocver <- as.character(BiocManager:::.version_choose_best())
+        Sys.setenv(R_BIOC_VERSION = biocver)
         unloadNamespace("BiocManager")
       }, error = identity)
     }
 
-    if (!nzchar(ver)) {
+    if (!nzchar(biocver)) {
       rver <- getRversion()
-      ver <- {
+      biocver <- {
         if (rver >= "3.6.0") "3.9" else
         if (rver >= "3.5.1") "3.8" else
         if (rver >= "3.5.0") "3.7" else
@@ -43,20 +54,11 @@ local({
         if (rver >= "3.2.0") "3.1" else
                              "3.0"
       }
-      Sys.setenv(R_BIOC_VERSION = ver)
+      Sys.setenv(R_BIOC_VERSION = biocver)
     }
   }
-  
-  known_repos <- function() {
-    p <- file.path(Sys.getenv("HOME"), ".R", "repositories")
-    if (!file.exists(p)) p <- file.path(R.home("etc"), "repositories")
-    ns <- getNamespace("tools")
-    .read_repositories <- get(".read_repositories", envir = ns)
-    a <- .read_repositories(p)
-    repos <- a$URL
-    names(repos) <- rownames(a)
-    repos
-  }
+
+  biocver <- package_version(Sys.getenv("R_BIOC_VERSION"))
 
   repos <- c(
     CRAN = "https://cloud.r-project.org",
@@ -71,8 +73,13 @@ local({
   
   # Drop some
   repos <- repos[!grepl("(Omegahat|R-Forge|rforge.net)", names(repos))]
-  if (package_version(Sys.getenv("R_BIOC_VERSION")) >= "3.6") {
+
+  # Bioconductor tweaks
+  if (biocver >= "3.6") {
     repos <- repos[!grepl("BioCextra", names(repos))]
+  }
+  if (biocver >= "3.9") {
+    repos["BioCworkflows"] <- gsub("bioc$", "workflows", repos["BioCsoft"])
   }
 
   # Use HTTP when HTTPS is not supported
