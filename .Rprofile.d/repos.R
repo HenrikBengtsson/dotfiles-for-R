@@ -7,6 +7,7 @@
 #' * `R_BIOC_VERSION`
 #'
 #' @author Henrik Bengtsson
+#' @imports utils BiocVersion BiocManager startup
 local({
   known_repos <- function() {
     p <- file.path(Sys.getenv("HOME"), ".R", "repositories")
