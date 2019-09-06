@@ -15,7 +15,29 @@ local({
       }
       url <- dcf$URL
       if (is.null(url)) url <- NA_character_
-      message(sprintf("Package folder:\n - package: %s\n - devel version: %s\n - installed version: %s\n - URL: %s\n - R version: %s (%s)\n - R_LIBS_USER: %s\n - CRANCACHE_DIR: %s\n - PWD: %s\n", pkg, pkg_ver, ver, url, getRversion(), R.home(), Sys.getenv("R_LIBS_USER"), Sys.getenv("CRANCACHE_DIR"), getwd()))
+      message(sprintf(
+"Package folder:\
+ - package: %s\
+ - devel version: %s\
+ - installed version: %s\
+ - URL: %s
+ - R version: %s (%s)\
+ - R_LIBS_USER: %s\
+ - .libPaths(): %s\
+ - repos: %s\
+ - R check env vars: %s\
+ - CRANCACHE_DIR: %s\
+ - PWD: %s\n",
+        pkg, pkg_ver, ver,
+	url,
+	getRversion(), R.home(),
+	Sys.getenv("R_LIBS_USER"),
+	paste(sQuote(.libPaths()), collapse=", "),
+	{ repos <- getOption("repos"); paste(sprintf("%s=%s", names(repos), sQuote(repos)), collapse=", ") },
+	{ envs <- Sys.getenv(); envs <- envs[grep("^_?R_CHECK", names(envs))]; envs <- sprintf("%s=%s", names(envs), envs); envs <- paste(envs, collapse=", "); envs },
+	Sys.getenv("CRANCACHE_DIR"),
+	getwd()
+      ))
     }
   }
 })
