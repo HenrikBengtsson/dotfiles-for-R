@@ -61,14 +61,14 @@ local({
   biocver <- package_version(Sys.getenv("R_BIOC_VERSION"))
 
   repos <- c(
+    getOption("repos"),
     CRAN = "https://cloud.r-project.org",
     CRANextra = if (.Platform$OS.type == "windows") {
       "https://www.stats.ox.ac.uk/pub/RWin"
     },
     "R-Forge" = "http://R-Forge.R-project.org",
     Omegahat = "http://www.omegahat.org/R",
-    known_repos(),
-    getOption("repos")
+    known_repos()
   )
   
   # Drop some
