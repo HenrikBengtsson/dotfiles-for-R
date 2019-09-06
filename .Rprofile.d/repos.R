@@ -62,23 +62,21 @@ local({
 
   repos <- c(
     getOption("repos"),
-    CRAN = "https://cloud.r-project.org",
-    CRANextra = if (.Platform$OS.type == "windows") {
-      "https://www.stats.ox.ac.uk/pub/RWin"
-    },
-    "R-Forge" = "http://R-Forge.R-project.org",
-    Omegahat = "http://www.omegahat.org/R",
-    known_repos()
+    known_repos(),
+    "CRAN"       = "https://cloud.r-project.org",
+    "CRANextra"  = if (.Platform$OS.type == "windows") {
+                     "https://www.stats.ox.ac.uk/pub/RWin"
+                   },
+    "R-Forge"    = "http://R-Forge.R-project.org",
+    "Omegahat"   = "http://www.omegahat.org/R",
+    "rforge.net" = "https://www.rforge.net"
   )
 
   # Drop remaining '@...@' values
   repos <- grep("^@.*@$", repos, invert=TRUE, value=TRUE)
 
-  # Drop some
-  repos <- repos[!grepl("(Omegahat|R-Forge|rforge.net)", names(repos))]
-
-  # Drop R-Forge
-  repos <- repos[!grepl("R-Forge", names(repos))]
+  # Drop miscellaneous 
+  repos <- repos[!grepl("(CRANextra|Omegahat|R-Forge|rforge.net)", names(repos))]
 
   # Bioconductor tweaks
   if (biocver >= "3.6") {
@@ -88,6 +86,10 @@ local({
     repos["BioCworkflows"] <- gsub("bioc$", "workflows", repos[["BioCsoft"]])
   }
 
+  # Bring CRAN to the front
+  idx <- match("CRAN", names(repos))
+  if (!is.na(idx)) repos <- c(repos[idx], repos[-idx])
+  
   # Use HTTP when HTTPS is not supported
   if (getRversion() < "3.2.2" || startup::sysinfo()$wine) {
     repos <- gsub("https://", "http://", repos, fixed = TRUE)
