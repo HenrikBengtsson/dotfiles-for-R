@@ -70,7 +70,10 @@ local({
     Omegahat = "http://www.omegahat.org/R",
     known_repos()
   )
-  
+
+  # Drop remaining '@...@' values
+  repos <- grep("^@.*@$", repos, invert=TRUE, value=TRUE)
+
   # Drop some
   repos <- repos[!grepl("(Omegahat|R-Forge|rforge.net)", names(repos))]
 
