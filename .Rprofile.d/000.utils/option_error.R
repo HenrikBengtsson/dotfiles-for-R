@@ -1,9 +1,26 @@
-option_error <- function(what = c("reset", "dump")) {
+option_error <- function(what = c("reset", "record_error_msg", "dump")) {
   what <- match.arg(what)
+
+  ## Return dumped frames (instead of dumping them to global env)
+  dump_frames <- function() {
+    tmpfile <- tempfile(fileext="dump.frames.rda")
+    on.exit(file.remove(tmpfile))
+    tmpname <- tools::file_path_sans_ext(tmpfile)
+    utils::dump.frames(tmpname, to.file=TRUE)
+    res <- load(tmpfile)
+    dump <- get(res)
+  }
   
   if (what == "reset") {
     options(error = NULL)
-  } else {
+  } else if (what == "record_error_msg") {
+    options(error = function() {
+     dumpto <- dump_frames()
+     ## The error message (as rendered)
+     msg <- attr(dumpto, "error.message")
+     assign(".Last.error.message", msg, envir=globalenv()) 
+   })
+  } else if (what == "dump") {
     options(error = function() {
       tb <- .traceback(2L)
       name <- getOption("startup.session.dumpto", "last.dump")
