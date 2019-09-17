@@ -9,12 +9,13 @@
 #' @references
 #' * https://github.com/HenrikBengtsson/Wishlist-for-R/issues/38
 #' * https://github.com/HenrikBengtsson/Wishlist-for-R/issues/48
+#' * [src/main/errors.c](https://github.com/wch/r-source/blob/be7f4ea6b7b478631a1f74e8cb9d1d18ca976bbf/src/main/errors.c#L2058-L2195)
 
 ## Supported since R (>= 3.4.0)
-_R_CHECK_LENGTH_1_CONDITION_=${_R_CHECK_LENGTH_1_CONDITION_-true}
+_R_CHECK_LENGTH_1_CONDITION_=${_R_CHECK_LENGTH_1_CONDITION_-verbose}
 
 ## Supported since R (>= 3.6.0)
-_R_CHECK_LENGTH_1_LOGIC2_=${_R_CHECK_LENGTH_1_LOGIC2_-true}
+_R_CHECK_LENGTH_1_LOGIC2_=${_R_CHECK_LENGTH_1_LOGIC2_-verbose}
 
 
 
