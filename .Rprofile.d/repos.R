@@ -44,6 +44,8 @@ local({
     # Ad hoc via the R version
     rver <- getRversion()
     biocver <- {
+      if (rver >= "4.0.0") "3.11" else ## per 2019-10-30
+      if (rver >= "3.6.1") "3.10" else ## per 2019-10-30
       if (rver >= "3.6.0") "3.9" else
       if (rver >= "3.5.1") "3.8" else
       if (rver >= "3.5.0") "3.7" else
