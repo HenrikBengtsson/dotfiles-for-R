@@ -16,6 +16,3 @@ _R_CHECK_LENGTH_1_CONDITION_=${_R_CHECK_LENGTH_1_CONDITION_-verbose}
 
 ## Supported since R (>= 3.6.0)
 _R_CHECK_LENGTH_1_LOGIC2_=${_R_CHECK_LENGTH_1_LOGIC2_-verbose}
-
-
-
