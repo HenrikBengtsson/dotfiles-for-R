@@ -25,7 +25,9 @@ options_tracker <- local({
 
   nono_msg <- function(...) {
     msg <- sprintf(...)
-    msg <- sprintf("No-no warning: %s", msg)
+    msg <- sprintf("DANGEROUS: %s", msg)
+    if (requireNamespace("crayon", quietly=TRUE))
+      msg <- crayon::blurred(msg)
     message(msg)
   }
   

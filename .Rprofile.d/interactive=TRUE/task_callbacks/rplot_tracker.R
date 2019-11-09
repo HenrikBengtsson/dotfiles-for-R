@@ -11,7 +11,14 @@
 startup_toolbox({
 rplots_tracker <- local({
   prev_files <- NULL
-  
+
+  message <- function(msg, ...) {
+    msg <- sprintf("NOTE: %s", msg)
+    if (requireNamespace("crayon", quietly=TRUE))
+      msg <- crayon::blurred(msg)
+    base::message(msg, ...)
+  }
+
   function(...) {
     files <- dir(pattern = "Rplots[0-9]*.pdf$")
     if (length(files) == 0) return(TRUE)
@@ -50,7 +57,7 @@ rplots_tracker <- local({
           message(sprintf("Graphics file modified%s: %s", why, sQuote(file)))
 	}
       } else {
-        message("Graphics file added: ", sQuote(file))
+        message(sprintf("Graphics file added: %s", sQuote(file)))
         prev_files[file] <- info
       }
     }
