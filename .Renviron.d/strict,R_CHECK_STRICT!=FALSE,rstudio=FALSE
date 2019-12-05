@@ -4,6 +4,11 @@
 #' * `_R_CHECK_LENGTH_1_CONDITION_`
 #' * `_R_CHECK_LENGTH_1_LOGIC2_`
 #'
+#' Example values:
+#' * true
+#' * verbose
+#' * package:_R_CHECK_PACKAGE_NAME_,abort,verbose
+#'
 #' @author Henrik Bengtsson
 #'
 #' @references
@@ -16,3 +21,10 @@ _R_CHECK_LENGTH_1_CONDITION_=${_R_CHECK_LENGTH_1_CONDITION_-verbose}
 
 ## Supported since R (>= 3.6.0)
 _R_CHECK_LENGTH_1_LOGIC2_=${_R_CHECK_LENGTH_1_LOGIC2_-verbose}
+
+## Supported since R (>= 4.0.0)
+_R_CLASS_MATRIX_ARRAY_=true
+
+## Assert that S3 methods are properly registered in the NAMESPACE
+_R_S3_METHOD_LOOKUP_BASEENV_AFTER_GLOBALENV_=${_R_S3_METHOD_LOOKUP_BASEENV_AFTER_GLOBALENV_-true}
+_R_S3_METHOD_LOOKUP_USE_TOPENV_AS_DEFENV_=${_R_S3_METHOD_LOOKUP_BASEENV_AFTER_GLOBALENV_-true}
