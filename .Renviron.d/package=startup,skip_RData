@@ -1,0 +1,2 @@
+R_STARTUP_RDATA=${R_STARTUP_RDATA-prompt,rename}
+

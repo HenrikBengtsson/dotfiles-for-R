@@ -1,5 +1,30 @@
+#' Make R CMD check more strict
+#'
+#' Environment variables that are set:
+#' * `_R_CHECK_LENGTH_1_CONDITION_`
+#' * `_R_CHECK_LENGTH_1_LOGIC2_`
+#'
+#' Example values:
+#' * true
+#' * verbose
+#' * package:_R_CHECK_PACKAGE_NAME_,abort,verbose
+#'
+#' @author Henrik Bengtsson
+#'
+#' @references
+#' * https://github.com/HenrikBengtsson/Wishlist-for-R/issues/38
+#' * https://github.com/HenrikBengtsson/Wishlist-for-R/issues/48
+#' * [src/main/errors.c](https://github.com/wch/r-source/blob/be7f4ea6b7b478631a1f74e8cb9d1d18ca976bbf/src/main/errors.c#L2058-L2195)
+
 ## Supported since R (>= 3.4.0)
-_R_CHECK_LENGTH_1_CONDITION_=true
+_R_CHECK_LENGTH_1_CONDITION_=${_R_CHECK_LENGTH_1_CONDITION_-verbose}
 
 ## Supported since R (>= 3.6.0)
-_R_CHECK_LENGTH_1_LOGIC2_=true
+_R_CHECK_LENGTH_1_LOGIC2_=${_R_CHECK_LENGTH_1_LOGIC2_-verbose}
+
+## Supported since R (>= 4.0.0)
+_R_CLASS_MATRIX_ARRAY_=true
+
+## Assert that S3 methods are properly registered in the NAMESPACE
+_R_S3_METHOD_LOOKUP_BASEENV_AFTER_GLOBALENV_=${_R_S3_METHOD_LOOKUP_BASEENV_AFTER_GLOBALENV_-true}
+_R_S3_METHOD_LOOKUP_USE_TOPENV_AS_DEFENV_=${_R_S3_METHOD_LOOKUP_BASEENV_AFTER_GLOBALENV_-true}

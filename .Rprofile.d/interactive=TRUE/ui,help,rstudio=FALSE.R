@@ -1,3 +1,14 @@
+#' Configure R's HTML help-page server
+#'
+#' Options that are set:
+#' * `help.ports`
+#' * `help_type`
+#' * `browser`
+#'
+#' @author Henrik Bengtsson
+#'
+#' @import tools
+
 ## Setup built-in HTTP daemon
 ## Always only the HTML help on the same port
 local({

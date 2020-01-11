@@ -1,3 +1,9 @@
+#' Warnings about stray package 00LOCK folders
+#'
+#' @author Henrik Bengtsson
+#'
+#' @imports startup
+#' @imports history
 local({
   #' Find 00LOCK-package folders
   #'
@@ -11,7 +17,7 @@ local({
   #' the list is `paths`.
   #'
   #' @export
-  find_00lock <- function(paths = .libPaths(), older_than = 3600) {
+  find_00lock <- function(paths = .libPaths(), older_than = 1200) {
     locks <- lapply(paths, FUN = dir, pattern = "^00LOCK-", full.names = TRUE)
     names(locks) <- paths
   
@@ -29,9 +35,27 @@ local({
   
     locks
   }
-  
-  paths <- unlist(find_00lock(older_than = 3600))
+
+  paths <- unlist(find_00lock(older_than = 1200))
   if (length(paths) > 0) {
-    startup::warn("Detected package lock folders that are older than 60 minutes (suggestion they are left overs from failed package installations): [n = %d] %s", length(paths), paste(sprintf("%s [last modified on %s]", sQuote(paths), file.info(paths)$mtime), collapse = ", "))
+    startup::warn("Detected package lock folders that are older than 20 minutes (suggestion they are left overs from failed package installations): [n = %d] %s", length(paths), paste(sprintf("%s [last modified on %s]", sQuote(paths), file.info(paths)$mtime), collapse = ", "))
+
+    if_namespace <- function(pkg, expr, envir = parent.frame(), default = NULL, quiet = TRUE, unload = NA) {
+      expr <- substitute(expr)
+      loaded <- isNamespaceLoaded(pkg)
+      if (is.na(unload)) unload <- loaded
+      res <- requireNamespace(pkg, quietly = quiet)
+      if (!res) return(default)
+      if (unload) on.exit(unloadNamespace(pkg))
+      eval(expr, envir = envir, enclos = baseenv())
+    }
+    
+    ## Add entry to the command-line history
+    if_namespace("history", {
+      code <- bquote(unlink(.(unname(paths)), recursive = TRUE))
+      code <- deparse(code, width.cutoff = 500L)
+      code <- sprintf("#startup# Remove stray 00LOCK folder\n%s", code)
+      history::history_append(code)
+    })
   }
 })

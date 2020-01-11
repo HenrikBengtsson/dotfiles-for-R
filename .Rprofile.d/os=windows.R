@@ -1,3 +1,16 @@
+#' Tweaks when running R for MS Windows via Wine on Linux
+#'
+#' Options that are set:
+#' * `download.file.method`
+#' * `useFancyQuotes`
+#'
+#' Environment variables that are set:
+#' * `LC_TIME`
+#' * `LC_MONETARY`
+#' * `BINPREF`
+#'
+#' @author Henrik Bengtsson
+
 ## Wine on Linux tweaks
 if (startup::sysinfo()$wine) {
   options(download.file.method = "libcurl")
