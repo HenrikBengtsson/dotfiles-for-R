@@ -6,7 +6,7 @@
 #'
 #' @author Henrik Bengtsson
 #'
-#' @import startup utils
+#' @imports startup utils
 
 startup_toolbox({
 rplots_tracker <- local({

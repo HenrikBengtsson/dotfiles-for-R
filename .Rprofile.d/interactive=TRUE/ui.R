@@ -8,7 +8,7 @@
 #'
 #' @author Henrik Bengtsson
 #'
-#' @import utils
+#' @imports utils
 
 ## TAB completions
 utils::rc.settings(ipck = TRUE)

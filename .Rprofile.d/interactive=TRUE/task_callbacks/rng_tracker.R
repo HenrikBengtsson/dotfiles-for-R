@@ -5,7 +5,7 @@
 #'
 #' @author Henrik Bengtsson
 #'
-#' @import startup
+#' @imports startup
 startup_toolbox({
 rng_tracker <- local({
   last <- .GlobalEnv$.Random.seed

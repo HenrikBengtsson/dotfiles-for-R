@@ -1,4 +1,7 @@
-## https://github.com/HenrikBengtsson/r-ideas/issues/81
+#' @seealso
+#' https://github.com/HenrikBengtsson/r-ideas/issues/81
+#'
+#' @imports utils
 local({
   cmdArgs <- commandArgs()
   # Skip?

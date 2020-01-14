@@ -9,7 +9,7 @@
 #'
 #' @author Henrik Bengtsson
 #'
-#' @import startup
+#' @imports startup
 startup_toolbox({
 options_tracker <- local({
   nono <- list(
