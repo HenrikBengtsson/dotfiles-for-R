@@ -7,7 +7,7 @@
 #'
 #' @author Henrik Bengtsson
 #'
-#' @import tools
+#' @imports tools
 
 ## Setup built-in HTTP daemon
 ## Always only the HTML help on the same port

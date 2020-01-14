@@ -11,6 +11,7 @@
 #'
 #' @author Henrik Bengtsson
 
+#' @imports startup
 ## Wine on Linux tweaks
 if (startup::sysinfo()$wine) {
   options(download.file.method = "libcurl")

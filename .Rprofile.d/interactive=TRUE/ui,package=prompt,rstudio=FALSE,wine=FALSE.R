@@ -15,7 +15,7 @@
 #' @references
 #' * https://github.com/gaborcsardi/prompt
 #'
-#' @import prompt memuse crayon grDevices profmem
+#' @imports prompt memuse crayon grDevices profmem
 if (!exists("toggle", mode = "function", envir = getNamespace("prompt"))) {
   use_prompt <- local({
     env <- prompt:::prompt_env
