@@ -36,6 +36,7 @@ option_error <- function(what = c("reset", "record_error_msg", "dump")) {
       info <- as.list(Sys.info())
       info$pid <- Sys.getpid()
       info$call <- commandArgs()
+      info$pwd <- getwd()
       info$time <- Sys.time()
       utils::str(info, width = 1000L, vec.len = Inf)
     
