@@ -14,7 +14,7 @@ startup_toolbox({
 options_tracker <- local({
   nono <- list(
     ## Package 'base':
-    stringsAsFactors = TRUE,
+    if (getRversion() < "4.0.0") stringsAsFactors = TRUE,
     
     ## Package 'stats':
     contrasts = c(unordered = "contr.treatment", ordered = "contr.poly"),
