@@ -1,13 +1,32 @@
 #' Make R CMD check more strict
 #'
 #' Environment variables that are set:
-#' * `_R_CHECK_LENGTH_1_CONDITION_`
-#' * `_R_CHECK_LENGTH_1_LOGIC2_`
+#'
+#' * `_R_CHECK_LENGTH_1_CONDITION_` (supported since R 3.4.0)
+#' * `_R_CHECK_LENGTH_1_LOGIC2_` (supported since R 3.6.0)
 #'
 #' Example values:
-#' * true
-#' * verbose
-#' * package:_R_CHECK_PACKAGE_NAME_,abort,verbose
+#' * `warn`          - gives a warning
+#' * `true`          - gives an error
+#' * `abort`         - gives an error and aborts R (sic!)
+#' * `verbose`       - like `true` but with a detailed traceback
+#' * `warn,verbose`  - like `warn` but with a detailed traceback
+#' * `abort,verbose` - like `abort` but with a detailed traceback
+#'
+#' The above with apply to all code in all packages.  To restrict it
+#' to only the package being tested by 'R CMD check', add also
+#' `_R_CHECK_PACKAGE_NAME_`, e.g.
+#'
+#' * `package:_R_CHECK_PACKAGE_NAME_,verbose`
+#'
+#' In R 3.6.x, `R CMD check --as-cran` sets:
+#'
+#' * `_R_CHECK_LENGTH_1_LOGIC2_=package:_R_CHECK_PACKAGE_NAME_,abort,verbose`
+#'
+#' In R devel ("4.0.0"), `R CMD check --as-cran` sets:
+#'
+#' * `_R_CHECK_LENGTH_1_LOGIC2_=package:_R_CHECK_PACKAGE_NAME_,verbose`
+#' * `_R_CHECK_LENGTH_1_CONDITION_=package:_R_CHECK_PACKAGE_NAME_,verbose`
 #'
 #' @author Henrik Bengtsson
 #'
@@ -16,10 +35,10 @@
 #' * https://github.com/HenrikBengtsson/Wishlist-for-R/issues/48
 #' * [src/main/errors.c](https://github.com/wch/r-source/blob/be7f4ea6b7b478631a1f74e8cb9d1d18ca976bbf/src/main/errors.c#L2058-L2195)
 
-## Supported since R (>= 3.4.0)
+## Check for bugs like if (c(TRUE, FALSE)). Supported since R (>= 3.4.0)
 _R_CHECK_LENGTH_1_CONDITION_=${_R_CHECK_LENGTH_1_CONDITION_-verbose}
 
-## Supported since R (>= 3.6.0)
+## Check for bugs like c(TRUE, FALSE) && TRUE. Supported since R (>= 3.6.0)
 _R_CHECK_LENGTH_1_LOGIC2_=${_R_CHECK_LENGTH_1_LOGIC2_-verbose}
 
 ## Supported since R (>= 4.0.0)
