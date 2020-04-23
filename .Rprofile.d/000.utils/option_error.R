@@ -22,7 +22,8 @@ option_error <- function(what = c("reset", "record_error_msg", "dump")) {
    })
   } else if (what == "dump") {
     options(error = function() {
-      tb <- .traceback(2L)
+      tb <- .traceback(NULL)
+      if (is.null(tb)) tb <- .traceback(2L)
       name <- getOption("startup.session.dumpto", "last.dump")
       utils::dump.frames(dumpto = name, to.file = FALSE)
       save(list = name, envir = .GlobalEnv, file = paste0(name, ".rda"))
