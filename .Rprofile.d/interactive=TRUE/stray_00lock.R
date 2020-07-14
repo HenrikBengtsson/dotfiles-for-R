@@ -38,7 +38,7 @@ local({
 
   paths <- unlist(find_00lock(older_than = 1200))
   if (length(paths) > 0) {
-    startup::warn("Detected package lock folders that are older than 20 minutes (suggestion they are left overs from failed package installations): [n = %d] %s", length(paths), paste(sprintf("%s [last modified on %s]", sQuote(paths), file.info(paths)$mtime), collapse = ", "))
+    startup::warn("Detected package lock folders that are older than 20 minutes, which suggests they are left overs from failed package installations: [n = %d] %s", length(paths), paste(sprintf("%s [last modified on %s]", sQuote(paths), file.info(paths)$mtime), collapse = ", "))
 
     if_namespace <- function(pkg, expr, envir = parent.frame(), default = NULL, quiet = TRUE, unload = NA) {
       expr <- substitute(expr)

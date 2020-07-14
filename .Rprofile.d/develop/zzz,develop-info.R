@@ -52,4 +52,7 @@ local({
     getwd(),
     paste(sQuote(cmdArgs), collapse = " ")
   ))
+  
+  ## For conviency:
+  assign(".packageName", pkg, envir = globalenv())
 })

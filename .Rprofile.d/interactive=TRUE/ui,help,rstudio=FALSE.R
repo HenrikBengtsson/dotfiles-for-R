@@ -10,7 +10,7 @@
 #' @imports tools
 
 ## Setup built-in HTTP daemon
-## Always only the HTML help on the same port
+## Always serve HTML help on the same port for a given version of R
 local({
   port <- sum(c(1e4, 100) * as.double(R.version[c("major", "minor")]))
   options(help.ports = port + 0:9)
