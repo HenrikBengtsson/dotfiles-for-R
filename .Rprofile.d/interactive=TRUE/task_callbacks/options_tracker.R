@@ -12,6 +12,10 @@
 #' @imports startup
 startup_toolbox({
 options_tracker <- local({
+  ## Don't use options() here because other options might be added during
+  ## R startup process after this tracker is initiated
+  last <- NULL
+  
   nono <- list(
     ## Package 'base':
     stringsAsFactors = if (getRversion() >= "4.0.0") FALSE else TRUE,
@@ -23,21 +27,58 @@ options_tracker <- local({
     ts.S.compat = FALSE
   )
 
-  nono_msg <- function(...) {
+  note <- function(..., prefix = "TRACKER: ") {
     msg <- sprintf(...)
-    msg <- sprintf("DANGEROUS: %s", msg)
+    msg <- paste(prefix, msg, sep = "")
     if (requireNamespace("crayon", quietly=TRUE))
       msg <- crayon::blurred(msg)
     message(msg)
   }
   
   function(...) {
+    current <- options()
+    if (!is.null(last)) {
+      msg <- NULL
+      names <- names(current)
+      names_last <- names(last)
+
+      ## Options added?
+      changed <- setdiff(names, names_last)
+      if (length(changed) > 0L) {
+        msg <- c(msg, sprintf("Options added: [n=%d] %s.", length(changed), paste(sQuote(changed), collapse = ", ")))
+      }
+      
+      ## Options removed?
+      changed <- setdiff(names_last, names)
+      if (length(changed) > 0L) {
+        msg <- c(msg, sprintf("Options removed: [n=%d] %s.", length(changed), paste(sQuote(changed), collapse = ", ")))
+      }
+      
+      ## Options changed?
+      changed <- intersect(names, names_last)
+      changed <- setdiff(changed, "prompt")
+      
+      for (kk in seq_along(changed)) {
+        name <- changed[kk]
+        if (identical(current[[name]], last[[name]])) changed[kk] <- ""
+      }
+      changed <- changed[nzchar(changed)]
+      if (length(changed) > 0L) {
+        msg <- c(msg, sprintf("Options changed: [n=%d] %s.", length(changed), paste(sQuote(changed), collapse = ", ")))
+      }
+      if (length(msg) > 0L) {
+        note(paste(msg, collapse = " "))
+      }
+    }
+    last <<- current
+    
     for (name in names(nono)) {
       preferred <- nono[[name]]
       value <- getOption(name)
       if (all(value == preferred)) next
-      nono_msg("Option %s was changed from its preferred value (%s): %s", sQuote(name), sQuote(paste(deparse(preferred), collapse = "; ")), sQuote(paste(deparse(value), collapse = "; ")))
+      note("Option %s was changed from its preferred value (%s): %s", sQuote(name), sQuote(paste(deparse(preferred), collapse = "; ")), sQuote(paste(deparse(value), collapse = "; ")), prefix = "TRACKER: [DANGEROUS] ")
     }
+    
     TRUE
   }
 })
