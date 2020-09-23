@@ -9,3 +9,10 @@ _R_CHECK_LENGTH_1_LOGIC2_=package:_R_CHECK_PACKAGE_NAME_,verbose
 _R_CHECK_TESTS_NLINES_=${_R_CHECK_TESTS_NLINES_-50}
 
 #_R_CHECK_XREFS_REPOSITORIES_="RCLI_OFFLINE_2"
+
+
+## Customize revdepcheck to also check vignettes.
+## The default is R_REVDEPCHECK_CHECK_ARGS="--no-manuals --no-build-vignettes"
+## Requires:
+## https://github.com/HenrikBengtsson/revdepcheck/tree/feature/check_args
+R_REVDEPCHECK_CHECK_ARGS="--no-manuals"
