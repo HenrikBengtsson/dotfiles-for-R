@@ -13,7 +13,7 @@ rplots_tracker <- local({
   prev_files <- NULL
 
   message <- function(msg, ...) {
-    msg <- sprintf("NOTE: %s", msg)
+    msg <- sprintf("TRACKER: %s", msg)
     if (requireNamespace("crayon", quietly=TRUE))
       msg <- crayon::blurred(msg)
     base::message(msg, ...)
