@@ -13,7 +13,7 @@ rng_tracker <- local({
   function(...) {
     curr <- .GlobalEnv$.Random.seed
     if (!identical(curr, last)) {
-      msg <- "NOTE: .Random.seed changed"
+      msg <- "TRACKER: .Random.seed changed"
       if (requireNamespace("crayon", quietly=TRUE)) msg <- crayon::blurred(msg)
       message(msg)
       last <<- curr
