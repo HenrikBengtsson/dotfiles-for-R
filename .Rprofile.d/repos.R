@@ -43,15 +43,18 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
       ## WORKAROUND: BiocManager::version() can be very slow
       ## because it calls installed.packages().
       ## https://github.com/Bioconductor/BiocManager/pull/42
-      if (utils::packageVersion("BiocManager") >= "1.30.5") {
-        biocver <- BiocManager::version()
-      } else {
-        tryCatch({
-          biocver <- as.character(BiocManager:::.version_choose_best())
+      tryCatch({
+        if (utils::packageVersion("BiocManager") >= "1.30.5") {
+          biocver <- BiocManager::version()
           unloadNamespace("BiocManager")
-        }, error = identity)
-      }
-      if (nzchar(biocver)) return(biocver)
+        } else {
+          tryCatch({
+            biocver <- as.character(BiocManager:::.version_choose_best())
+            unloadNamespace("BiocManager")
+          }, error = identity)
+        }
+        if (nzchar(biocver)) return(biocver)
+      }, error = identity)
   
       # Ad hoc via the R version
       rver <- getRversion()
