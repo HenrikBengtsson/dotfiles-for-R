@@ -45,7 +45,7 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
       ## https://github.com/Bioconductor/BiocManager/pull/42
       tryCatch({
         if (utils::packageVersion("BiocManager") >= "1.30.5") {
-          biocver <- BiocManager::version()
+          biocver <- as.character(BiocManager::version())
           unloadNamespace("BiocManager")
         } else {
           tryCatch({
