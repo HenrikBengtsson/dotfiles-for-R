@@ -12,8 +12,8 @@ package_tracker <- local({
     curr <- loadedNamespaces()
     if (!identical(curr, last)) {
       diff <- list(
-        loaded   = setdiff(curr, last),
-        unloaded = setdiff(last, curr)
+        loaded   = sort(setdiff(curr, last)),
+        unloaded = sort(setdiff(last, curr))
       )
       diff <- vapply(names(diff), FUN = function(name) {
         vars <- diff[[name]]
