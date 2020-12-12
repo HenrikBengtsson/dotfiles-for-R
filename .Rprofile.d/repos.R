@@ -1,5 +1,12 @@
 #' Configure option 'repos' for CRAN and Bioconductor
 #'
+#' The Bioconductor version is inferred from:
+#'
+#' 1. Environment variable `R_BIOC_VERSION`
+#' 2. `utils::packageVersion("BiocVersion")`
+#' 3. `BiocManager::version()`
+#' 4. Mapping R version to manually curated version table
+#'
 #' Options that are set:
 #' * `repos`
 #'
@@ -8,7 +15,6 @@
 #'
 #' @author Henrik Bengtsson
 #' @imports utils BiocVersion BiocManager startup
-
 if (!nzchar(Sys.getenv("R_CMD"))) {
   local({
     known_repos <- function() {
@@ -38,14 +44,23 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
       ## because it calls installed.packages().
       ## https://github.com/Bioconductor/BiocManager/pull/42
       tryCatch({
-        biocver <- as.character(BiocManager:::.version_choose_best())
-        unloadNamespace("BiocManager")
+        if (utils::packageVersion("BiocManager") >= "1.30.5") {
+          biocver <- as.character(BiocManager::version())
+          unloadNamespace("BiocManager")
+        } else {
+          tryCatch({
+            biocver <- as.character(BiocManager:::.version_choose_best())
+            unloadNamespace("BiocManager")
+          }, error = identity)
+        }
+        if (nzchar(biocver)) return(biocver)
       }, error = identity)
-      if (nzchar(biocver)) return(biocver)
   
       # Ad hoc via the R version
       rver <- getRversion()
       biocver <- {
+        if (rver >= "4.1.0") "3.13" else ## per 2020-10-28
+        if (rver >= "4.0.3") "3.12" else ## per 2020-10-28
         if (rver >= "4.0.0") "3.11" else ## per 2019-10-30
         if (rver >= "3.6.1") "3.10" else ## per 2019-10-30
         if (rver >= "3.6.0") "3.9" else
