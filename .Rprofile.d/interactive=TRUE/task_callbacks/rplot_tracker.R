@@ -19,7 +19,7 @@ rplots_tracker <- local({
     base::message(msg, ...)
   }
 
-  function(...) {
+  function(expr, value, ok, visible) {
     files <- dir(pattern = "Rplots[0-9]*.pdf$")
     if (length(files) == 0) return(TRUE)
     files <- files[utils::file_test("-f", files)]

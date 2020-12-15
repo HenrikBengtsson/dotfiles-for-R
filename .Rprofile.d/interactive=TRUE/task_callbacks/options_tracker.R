@@ -35,7 +35,7 @@ options_tracker <- local({
     message(msg)
   }
   
-  function(...) {
+  function(expr, value, ok, visible) {
     current <- options()
     if (!is.null(last)) {
       msg <- NULL

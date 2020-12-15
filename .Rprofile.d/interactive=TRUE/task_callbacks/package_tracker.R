@@ -7,7 +7,7 @@ startup_toolbox({
 package_tracker <- local({
   last <- loadedNamespaces()
   
-  function(...) {
+  function(expr, value, ok, visible) {
     if (!isTRUE(getOption("tracker.packages", TRUE))) return(TRUE)
     curr <- loadedNamespaces()
     if (!identical(curr, last)) {

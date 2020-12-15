@@ -11,7 +11,7 @@ globals_tracker <- local({
   cache <- list()
   cache[[getwd()]] <- dir(all.files = TRUE)
   
-  function(...) {
+  function(expr, value, ok, visible) {
     if (!isTRUE(getOption("tracker.files", TRUE))) return(TRUE)
     pwd <- getwd()
     last <- cache[[pwd]]
