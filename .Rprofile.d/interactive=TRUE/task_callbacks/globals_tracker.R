@@ -20,7 +20,7 @@ globals_tracker <- local({
       )
 
       ## Filter out accepted additions
-      if (ok && length(diff$added) > 0L) {
+      if (ok && length(diff$added) > 0L && !is.symbol(expr)) {
         fcn <- expr[[1]]
         accept <- c("<-", "<<-")
         drop <- FALSE
