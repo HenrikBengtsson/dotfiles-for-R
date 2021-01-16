@@ -1,5 +1,19 @@
+#' Print Functions with Additional Source Information
+#'
+#' @param x A [base::function]
+#'
+#' @param useSource Passed to [base::print.function] as-is.
+#'
+#' @param \dots Not used.
+#'
+#' @return (invisible) the function `x`.
+#'
+#' @details
+#' If \pkg{prettycode} is installed, then `prettyprint:::print.function()`
+#' is used to print the function instead of [base::print.function].
+#'
 #' @imports prettycode
-#' @imports utils
+#' @imports utils getSrcFilename getSrcLocation
 print.function <- local({
     ## https://cran.r-project.org/web/packages/prettycode
     if (requireNamespace("prettycode", quietly = TRUE)) {
