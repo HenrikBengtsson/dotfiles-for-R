@@ -1,3 +1,5 @@
+#' @importFrom tools file_path_sans_ext
+#' @importFrom utils dump.frames sessionInfo str
 option_error <- function(what = c("reset", "record_error_msg", "dump")) {
   what <- match.arg(what)
 
@@ -57,9 +59,14 @@ option_error <- function(what = c("reset", "record_error_msg", "dump")) {
     
       cat("\n** Session information:\n")
       print(utils::sessionInfo())
-    
+
+
       ## Call quit(), otherwise R execution will continue
-      if (!interactive()) quit("no")
+      if (!interactive()) {
+        message(sprintf("Troubleshooting information dumped to files: %s.{out,rda}", name))
+        message("Execution halted")
+        quit("no", status = 1L)
+      }
     })
   }
 } ## option_error()

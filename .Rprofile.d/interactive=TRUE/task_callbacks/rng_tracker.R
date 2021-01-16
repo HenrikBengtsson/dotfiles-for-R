@@ -10,7 +10,7 @@ startup_toolbox({
 rng_tracker <- local({
   last <- .GlobalEnv$.Random.seed
   
-  function(...) {
+  function(expr, value, ok, visible) {
     curr <- .GlobalEnv$.Random.seed
     if (!identical(curr, last)) {
       msg <- "TRACKER: .Random.seed changed"
