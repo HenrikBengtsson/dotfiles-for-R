@@ -8,11 +8,19 @@
 #' @imports startup
 startup_toolbox({
 globals_tracker <- local({
+  startup <- TRUE
   last <- ls(envir = .GlobalEnv, all.names = TRUE)
   
   function(expr, value, ok, visible) {
     if (!isTRUE(getOption("tracker.globals", TRUE))) return(TRUE)
     curr <- ls(envir = .GlobalEnv, all.names = TRUE)
+
+    ## Avoid reporting on changes occuring during startup
+    if (startup) {
+      startup <<- FALSE
+      last <<- curr
+    }
+    
     if (!identical(curr, last)) {
       diff <- list(
         added   = setdiff(curr, last),

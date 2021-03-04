@@ -5,11 +5,19 @@
 #' @imports startup
 startup_toolbox({
 package_tracker <- local({
+  startup <- TRUE
   last <- loadedNamespaces()
   
   function(expr, value, ok, visible) {
     if (!isTRUE(getOption("tracker.packages", TRUE))) return(TRUE)
     curr <- loadedNamespaces()
+
+    ## Avoid reporting on changes occuring during startup
+    if (startup) {
+      startup <<- FALSE
+      last <<- curr
+    }
+
     if (!identical(curr, last)) {
       diff <- list(
         loaded   = sort(setdiff(curr, last)),
