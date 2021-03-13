@@ -43,3 +43,34 @@ print.function <- local({
         invisible(x)
     }
 })
+
+
+
+print_expression <- local({
+    ## https://cran.r-project.org/web/packages/prettycode
+    if (requireNamespace("prettycode", quietly = TRUE)) {
+        print_expr <- prettycode:::print.function
+    } else {
+        print_expr <- base::print
+    }
+    
+    function(x, ...) {
+#        expr <- bquote(function() .(x))
+#        fcn <- eval(expr)
+#        body(fcn) <- x
+#        fcn <- x
+        environment(x) <- emptyenv()
+        invisible(print_expr(x, useSource = FALSE))
+     }
+})
+
+
+print.call <- print_expression
+
+## Hmm... print() does not dispatch on `{`
+`print.{` <- print_expression
+
+## ... but this works
+#print2 <- function(x, ...) UseMethod("print2")
+#print2.call <- print_expression
+#`print2.{` <- print_expression
