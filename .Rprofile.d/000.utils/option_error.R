@@ -26,13 +26,20 @@ option_error <- function(what = c("reset", "record_error_msg", "dump")) {
     options(error = function() {
       tb <- .traceback(NULL)
       if (is.null(tb)) tb <- .traceback(2L)
-      name <- getOption("startup.session.dumpto", "last.dump")
+      file_prefix <- getOption("startup.session.dumpto", "last.dump")
+      name <- basename(file_prefix)
+      path <- dirname(file_prefix)
+      path <- file.path(path, ".Rdump")
+      if (!utils::file_test("-d", path)) dir.create(path, showWarnings = FALSE)
       utils::dump.frames(dumpto = name, to.file = FALSE)
-      save(list = name, envir = .GlobalEnv, file = paste0(name, ".rda"))
+      file <- file.path(path, paste0(name, ".rda"))
+      print(file)
+      save(list = name, envir = .GlobalEnv, file = file)
       
       dumpto <- get(name, envir = .GlobalEnv)
       rm(list = name, envir = .GlobalEnv)
-      sink(file = paste0(name, ".out"))
+      file <- file.path(path, paste0(name, ".out"))
+      sink(file = file)
       on.exit(sink(NULL))
       
       cat("** System information:\n")

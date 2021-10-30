@@ -1,7 +1,6 @@
-#' Warn when objects are added or removed from the global environment
+#' Warn when files are added or removed
 #'
-#' Global variables that are ignored:
-#' * `.Random.seed`
+#' Set R option \option{tracker.files} to `FALSE` to disable.
 #'
 #' @author Henrik Bengtsson
 #'

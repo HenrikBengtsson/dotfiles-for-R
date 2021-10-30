@@ -11,6 +11,8 @@
 #' @details
 #' If \pkg{prettycode} is installed, then `prettyprint:::print.function()`
 #' is used to print the function instead of [base::print.function].
+#' To disable it, set R option `cli.num_colors=1` or environment
+#' variable `NO_COLOR=false`.
 #'
 #' @imports prettycode
 #' @imports utils getSrcFilename getSrcLocation
@@ -43,3 +45,34 @@ print.function <- local({
         invisible(x)
     }
 })
+
+
+
+print_expression <- local({
+    ## https://cran.r-project.org/web/packages/prettycode
+    if (requireNamespace("prettycode", quietly = TRUE)) {
+        print_expr <- prettycode:::print.function
+    } else {
+        print_expr <- base::print
+    }
+    
+    function(x, ...) {
+#        expr <- bquote(function() .(x))
+#        fcn <- eval(expr)
+#        body(fcn) <- x
+#        fcn <- x
+        environment(x) <- emptyenv()
+        invisible(print_expr(x, useSource = FALSE))
+     }
+})
+
+
+print.call <- print_expression
+
+## Hmm... print() does not dispatch on `{`
+`print.{` <- print_expression
+
+## ... but this works
+#print2 <- function(x, ...) UseMethod("print2")
+#print2.call <- print_expression
+#`print2.{` <- print_expression
