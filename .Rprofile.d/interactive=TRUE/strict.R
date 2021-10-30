@@ -3,7 +3,7 @@
 #' Options that are set:
 #' * `warnPartialMatchDollar`
 #' * `warnPartialMatchArgs`
-#' * `warnPartialMatchAtt`
+#' * `warnPartialMatchAttr`
 #'
 #' @author Henrik Bengtsson
 options(
