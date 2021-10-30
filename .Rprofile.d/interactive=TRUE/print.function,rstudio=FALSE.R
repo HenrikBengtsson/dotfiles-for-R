@@ -11,6 +11,8 @@
 #' @details
 #' If \pkg{prettycode} is installed, then `prettyprint:::print.function()`
 #' is used to print the function instead of [base::print.function].
+#' To disable it, set R option `cli.num_colors=1` or environment
+#' variable `NO_COLOR=false`.
 #'
 #' @imports prettycode
 #' @imports utils getSrcFilename getSrcLocation
