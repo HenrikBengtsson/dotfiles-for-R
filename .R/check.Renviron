@@ -19,10 +19,15 @@ _R_CHECK_CRAN_INCOMING_CHECK_FILE_URIS_=true
 ## https://github.com/HenrikBengtsson/revdepcheck/tree/feature/check_args
 R_REVDEPCHECK_CHECK_ARGS="--no-manuals"
 
-
+## Test more like CRAN incoming
+## [1] https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Tools
+_R_CHECK_THINGS_IN_CHECK_DIR_=true
+_R_CHECK_THINGS_IN_TEMP_DIR_=true
+_R_CHECK_ORPHANED_=true
 
 ## All _R_CHECK_CRAN_* variables with their defaults as of R devel (4.1.0)
 ## The value with parenthesis is what CRAN-incoming checks use
+## [1] https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Tools
 # _R_CHECK_CRAN_INCOMING_NOTE_GNU_MAKE_=FALSE
 # _R_CHECK_CRAN_INCOMING_=NA
 # _R_CHECK_CRAN_INCOMING_REMOTE_=NA
