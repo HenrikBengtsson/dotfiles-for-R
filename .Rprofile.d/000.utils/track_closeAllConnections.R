@@ -2,6 +2,9 @@
 #'
 #' @param action (character) What action to take when called.
 #'
+#' @param allow (list) List of functions that are allowed to call
+#' `closeAllConnections()` and that this tracker will ignore.
+#'
 #' @param enable (character) Enable or disable tracking.
 #'
 #' @return Nothing.
@@ -19,9 +22,14 @@
 #' then no connections will be closed.
 #'
 #' export
-track_closeAllConnections <- function(action = c("error", "warning"), enable = TRUE) {
+track_closeAllConnections <- function(action = c("error", "warning"), allow = list(base::sys.save.image), enable = TRUE) {
   action <- match.arg(action)
   stopifnot(is.logical(enable), length(enable) == 1L, !is.na(enable))
+
+  stopifnot(
+    is.list(allow),
+    all(vapply(allow, FUN.VALUE = NA, FUN = is.function))
+  )
 
   ## Always disable
   suppressMessages({
@@ -29,11 +37,19 @@ track_closeAllConnections <- function(action = c("error", "warning"), enable = T
   })
 
   if (enable) {
-    tracer <- if (action == "error") {
+    expr_action <- if (action == "error") {
       quote(stop("[UNSAFE CODE] Detected a call to closeAllConnections(), but prevented it from taking place", call. = TRUE))
     } else {
       quote(warning("[UNSAFE CODE] Detected a call to closeAllConnections(). Please not that it is never a good idea to call this function", call. = TRUE, immediate. = TRUE))
     }
+
+    tracer <- bquote({
+      fcn <- tryCatch(eval(sys.call(which = 1L)[[1]]), error = identity)
+      skip <- any(vapply(.(allow), FUN.VALUE = FALSE, FUN = identical, fcn))
+      if (!isTRUE(skip)) {
+        .(expr_action)
+      }
+    })
     
     suppressMessages({
       trace(base::closeAllConnections, where = baseenv(), print = FALSE,
