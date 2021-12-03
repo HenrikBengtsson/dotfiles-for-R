@@ -70,8 +70,8 @@ option_error <- function(what = c("reset", "record_error_msg", "dump")) {
 
       ## Call quit(), otherwise R execution will continue
       if (!interactive()) {
-        message(sprintf("Troubleshooting information dumped to files: %s.{out,rda}", name))
-        message("Execution halted")
+        message(gettextf("Troubleshooting information dumped to files: %s.{out,rda}", name))
+        message(gettext("Execution halted\n", domain="R"))
         quit("no", status = 1L)
       }
     })

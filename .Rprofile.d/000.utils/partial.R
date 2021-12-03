@@ -13,7 +13,7 @@
 #' @export
 startup_partial <- function(fun, ...) {
   if (!is.function(fun))
-    stop("Argument 'fun' is not a function: ", mode(fun)[1])
+    stop(sprintf("Argument 'fun' is not a function: %s", mode(fun)[1]))
 
   args <- list(...)
   for (name in names(args)) {
