@@ -5,6 +5,7 @@
 #'
 #' Options that are set:
 #' * `setWidthOnResize`
+#' * `useFancyQuotes`
 #'
 #' @author Henrik Bengtsson
 #'
@@ -18,3 +19,6 @@ utils::rc.settings(ipck = TRUE)
 options(setWidthOnResize = TRUE)
 
 gui_dialogs("off")
+
+# Use regular single quotes
+options(useFancyQuotes = FALSE)
