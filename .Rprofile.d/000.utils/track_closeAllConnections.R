@@ -38,15 +38,31 @@ track_closeAllConnections <- function(action = c("error", "warning"), allow = li
 
   if (enable) {
     expr_action <- if (action == "error") {
-      quote(stop("[UNSAFE CODE] Detected a call to closeAllConnections(), but prevented it from taking place", call. = TRUE))
+      quote({
+        msg <- sprintf("%s. However, it was prevented from taking place", msg)
+        stop(msg, call. = TRUE)
+      })
     } else {
-      quote(warning("[UNSAFE CODE] Detected a call to closeAllConnections(). Please not that it is never a good idea to call this function", call. = TRUE, immediate. = TRUE))
+      quote({
+        msg <- sprintf("%s. Please not that it is never a good idea to call this function", msg)
+        warning(msg, call. = TRUE, immediate. = TRUE)
+      })
     }
 
     tracer <- bquote({
       fcn <- tryCatch(eval(sys.call(which = 1L)[[1]]), error = identity)
       skip <- any(vapply(.(allow), FUN.VALUE = FALSE, FUN = identical, fcn))
       if (!isTRUE(skip)) {
+        calls <- sys.calls()
+        calls <- calls[seq_len(length(calls) - 5L)]
+        if (length(calls) > 0) {
+          calls <- lapply(calls, FUN = deparse)
+          calls <- unlist(calls, use.names = FALSE)
+          calls <- paste(calls, collapse = " -> ")
+        } else {
+          calls <- "a direct call"
+        }
+        msg <- sprintf("[UNSAFE CODE] Detected a call to closeAllConnections() via %s", calls)
         .(expr_action)
       }
     })
