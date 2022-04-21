@@ -59,6 +59,8 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
       # Ad hoc via the R version
       rver <- getRversion()
       biocver <- {
+        if (rver >= "4.2.0") "3.15" else ## per 2021-10-27
+        if (rver >= "4.1.1") "3.14" else ## per 2021-10-27
         if (rver >= "4.1.0") "3.13" else ## per 2020-10-28
         if (rver >= "4.0.3") "3.12" else ## per 2020-10-28
         if (rver >= "4.0.0") "3.11" else ## per 2019-10-30

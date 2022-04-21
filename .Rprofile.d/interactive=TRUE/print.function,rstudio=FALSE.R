@@ -53,7 +53,7 @@ print_expression <- local({
     if (requireNamespace("prettycode", quietly = TRUE)) {
         print_expr <- prettycode:::print.function
     } else {
-        print_expr <- base::print
+        print_expr <- base::print.function
     }
     
     function(x, ...) {
