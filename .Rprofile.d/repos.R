@@ -22,6 +22,7 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
       if (!file.exists(p)) p <- file.path(R.home("etc"), "repositories")
       ns <- getNamespace("tools")
       .read_repositories <- get(".read_repositories", envir = ns)
+      ## NOTE: The following gives an error, if 'R_BIOC_VERSION' is not set
       a <- .read_repositories(p)
       repos <- a$URL
       names(repos) <- rownames(a)
@@ -49,8 +50,16 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
           unloadNamespace("BiocManager")
         } else {
           tryCatch({
+            ## WARNING: The following call with query the Bioconductor
+            ## web server (https://bioconductor.org/config.yaml) to infer
+            ## the recommended Bioconductor version for this version of R
+            ## NOTE: If it fails to connect, it will produce warnings
+            ## saying so, but will not give an error
             biocver <- as.character(BiocManager:::.version_choose_best())
             unloadNamespace("BiocManager")
+            ## Assert valid version, which is not the case if it failed
+            ## to query the Bioconductor server. If not, undo.
+            if (is.na(package_version(biocver, strict = FALSE))) biocver <- ""
           }, error = identity)
         }
         if (nzchar(biocver)) return(biocver)
@@ -76,10 +85,16 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
         if (rver >= "3.2.0") "3.1" else
                              "3.0"
       }
+    } ## bioc_version()
+
+
+    ## Query Bioconductor version in different ways
+    v <- bioc_version()
+    biocver <- package_version(v, strict = FALSE)
+    if (is.na(biocver)) {
+      stop(sprintf("Failed to infer Bioconductor version (from string %s). If set, make sure environment variable 'R_BIOC_VERSION' is set to valid version: %s", sQuote(v), Sys.getenv("R_BIOC_VERSION")))
     }
-  
-    Sys.setenv(R_BIOC_VERSION = bioc_version())
-    biocver <- package_version(Sys.getenv("R_BIOC_VERSION"))
+    Sys.setenv(R_BIOC_VERSION = v)
   
     repos <- c(
       getOption("repos"),
@@ -100,11 +115,13 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
     repos <- repos[!grepl("(CRANextra|Omegahat|R-Forge|rforge.net)", names(repos))]
   
     # Bioconductor tweaks
-    if (biocver >= "3.6") {
-      repos <- repos[!grepl("BioCextra", names(repos))]
-    }
-    if (biocver >= "3.7") {
-      repos["BioCworkflows"] <- gsub("bioc$", "workflows", repos[["BioCsoft"]])
+    if (!is.na(biocver)) {
+      if (biocver >= "3.6") {
+        repos <- repos[!grepl("BioCextra", names(repos))]
+      }
+      if (biocver >= "3.7") {
+        repos["BioCworkflows"] <- gsub("bioc$", "workflows", repos[["BioCsoft"]])
+      }
     }
   
     # Bring CRAN to the front
