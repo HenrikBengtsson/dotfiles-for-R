@@ -20,8 +20,15 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
     known_repos <- function() {
       p <- file.path(Sys.getenv("HOME"), ".R", "repositories")
       if (!file.exists(p)) p <- file.path(R.home("etc"), "repositories")
-      ns <- getNamespace("tools")
-      .read_repositories <- get(".read_repositories", envir = ns)
+      ## Find .read_repositories() - moved to 'utils' in R (>= 4.3.0)
+      .read_repositories <- NULL
+      for (pkg in c("tools", "utils")) {
+        ns <- getNamespace(pkg)
+        if (exists(".read_repositories", envir = ns)) {
+          .read_repositories <- get(".read_repositories", envir = ns)
+          break
+        }
+      }
       ## NOTE: The following gives an error, if 'R_BIOC_VERSION' is not set
       a <- .read_repositories(p)
       repos <- a$URL
