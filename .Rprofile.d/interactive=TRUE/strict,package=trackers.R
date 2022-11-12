@@ -1,15 +1,13 @@
-invisible({
-  library(trackers)
-  addTaskCallback(tracker_envvars,   name = "Environment-variable tracker")
-  addTaskCallback(tracker_files,     name = "Files tracker")
-  addTaskCallback(tracker_globalenv, name = ".GlobalEnv tracker")
-  addTaskCallback(tracker_options,   name = "Options tracker")
-  tracker_locale(NULL) ## initiate locale tracker
-  addTaskCallback(tracker_locale,    name = "Locale tracker")
-  addTaskCallback(tracker_packages,  name = "Packages tracker")
-  addTaskCallback(tracker_rng,       name = "RNG tracker")
-  addTaskCallback(tracker_rplots,    name = "Rplots tracker")
-  addTaskCallback(tracker_sink,      name = "Sink tracker")
-})
+if (interactive()) {
+  trackers::track_envvars()
+  trackers::track_files()
+  trackers::track_globalenv()
+  trackers::track_options()
+  trackers::track_locale()
+  trackers::track_packages()
+  trackers::track_rng()
+  trackers::track_rplots_files()
+  trackers::track_sinks()
+  trackers::trace_rng_on_load("on")
+}
 
-trackers::trace_rng_on_load("on")
