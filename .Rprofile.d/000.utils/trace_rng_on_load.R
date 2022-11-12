@@ -1,11 +1,11 @@
-#' Track packages that update the random number generation (RNG) state when loaded
+#' Trace packages that update the random number generation (RNG) state when loaded
 #'
-#' @param action (character) Enable or disable tracking.
+#' @param action (character) Enable or disable tracing.
 #'
 #' @return Nothing.
 #'
 #' @details
-#' This tracker injects itself as a tracer to [base::loadNamespace()], where
+#' This tracer injects itself as a tracer to [base::loadNamespace()], where
 #' it keeps track of the `.Random.seed` in the global environment as packages
 #' are _loaded_.  This way it can detect if a package updates the random
 #' number generation (RNG) state during load, e.g. when the package's
@@ -14,7 +14,7 @@
 #' is _attached_, e.g. when the package's `.onAttach()` function is called.
 #'
 #' export
-track_rng_on_load <- function(action = c("on", "off")) {
+trace_rng_on_load <- function(action = c("on", "off")) {
   action <- match.arg(action)
 
   ## Always disable
@@ -25,15 +25,18 @@ track_rng_on_load <- function(action = c("on", "off")) {
   if (action == "on") {
     suppressMessages({
       trace(loadNamespace, where = baseenv(), print = FALSE,
-            at = 1L, tracer = .tracker_rng_on_load)
+            at = 1L, tracer = .tracer_rng_on_load)
     })
   }
 
   invisible()
 }
 
-#' @suggestsFrom digest digest
-.tracker_rng_on_load <- local({
+#' @importFrom digest digest
+.tracer_rng_on_load <- local({
+  ## To please R CMD check
+  package <- state <- NULL
+  
   events <- data.frame(package = character(0L), state = character(0L), seed = character(0L))
   
   function(action = c("enter", "exit", "events"), pkgname = envir[["package"]], digest = TRUE, envir = parent.frame()) {
@@ -57,7 +60,7 @@ track_rng_on_load <- function(action = c("on", "off")) {
       ## on.exit() internally, which wipes any "exit" tracers.
       setHook(packageEvent(pkgname, "onLoad"), action = "append",
               function(pkgname, ...) {
-                .tracker_rng_on_load(action = "exit", pkgname = pkgname)
+                .tracer_rng_on_load(action = "exit", pkgname = pkgname)
               })
       return(invisible(events))
     } else if (action == "exit") {
@@ -103,7 +106,7 @@ track_rng_on_load <- function(action = c("on", "off")) {
       return(invisible(FALSE))
     } else if (action == "events") {
       if (digest) {
-        events$seed <- vapply(events$seed, FUN.VALUE = NA_character_, FUN = digest::digest)
+        events$seed <- vapply(events$seed, FUN.VALUE = NA_character_, FUN = digest)
       }
       return(events)
     }

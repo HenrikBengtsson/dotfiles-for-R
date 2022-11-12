@@ -1,13 +1,13 @@
-#' Track all calls to closeAllConnections()
+#' Trace all calls to closeAllConnections()
 #'
 #' @param action (character) What action to take when called.
 #'
 #' @param allow (list) List of functions that are allowed to call
-#' `closeAllConnections()` and that this tracker will ignore.
+#' `closeAllConnections()` and that this tracer will ignore.
 #'
-#' @param enable (logical) Enable or disable tracking.
+#' @param enable (logical) Enable or disable tracing.
 #'
-#' @param enable (logical) If TRUE, the call stack is part of the
+#' @param calls (logical) If TRUE, the call stack is part of the
 #' condition message, otherwise not.
 #'
 #' @return Nothing.
@@ -20,12 +20,12 @@
 #' do so, your R session is probably already in such a bad shape that it's
 #' better to restart R all along.
 #'
-#' This tracker detects whenever `closeAllConnections()` is called.
+#' This tracer detects whenever `closeAllConnections()` is called.
 #' It can then produce an informative warning or and error.  If an error,
 #' then no connections will be closed.
 #'
 #' export
-track_closeAllConnections <- function(action = c("error", "warning"), allow = list(base::sys.save.image), enable = TRUE, calls = TRUE) {
+trace_closeAllConnections <- function(action = c("error", "warning"), allow = list(base::sys.save.image), enable = TRUE, calls = TRUE) {
   action <- match.arg(action)
   stopifnot(is.logical(enable), length(enable) == 1L, !is.na(enable))
   stopifnot(is.logical(calls), length(calls) == 1L, !is.na(calls))
