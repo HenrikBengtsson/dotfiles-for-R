@@ -1,7 +1,7 @@
 ## Check for bugs like if (c(TRUE, FALSE)). Supported in R (>= 3.4.0 & < 4.2.0)
 _R_CHECK_LENGTH_1_CONDITION_=package:_R_CHECK_PACKAGE_NAME_,verbose
 
-## Check for bugs like c(TRUE, FALSE) && TRUE. Supported in R (>= 3.6.0)
+## Check for bugs like c(TRUE, FALSE) && TRUE. Supported in R (>= 3.6.0 & < 4.3.0)
 _R_CHECK_LENGTH_1_LOGIC2_=package:_R_CHECK_PACKAGE_NAME_,verbose
 
 ## "Number of trailing lines of test output to reproduce in the log.

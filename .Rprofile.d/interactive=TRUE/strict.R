@@ -13,6 +13,3 @@ options(
   warnPartialMatchAttr   = TRUE,
   showWarnCalls          = TRUE  ## show call stack for warnings
 )
-
-## Source: 000.utils/track_rng_on_load.R
-track_rng_on_load("on")
