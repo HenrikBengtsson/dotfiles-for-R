@@ -1,7 +1,7 @@
 #' Summarize an Interactive R Session on Shutdown
 #'
 #' @importFrom startup on_session_exit
-if (interactive() && requireNamespace("startup")) {
+if (interactive() && requireNamespace("startup", quietly = TRUE)) {
   startup::on_session_exit(local({
     t0 <- Sys.time()
     function(...) {
