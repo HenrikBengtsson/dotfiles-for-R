@@ -8,6 +8,7 @@ if (interactive()) {
   trackers::track_rng()
   trackers::track_rplots_files()
   trackers::track_sinks()
-  trackers::trace_rng_on_load("on")
+  ## FIXME: The following results in loadNamespace("pkgload") giving an error
+  ## /2023-03-09
+#  trackers::trace_rng_on_load("on")
 }
-
