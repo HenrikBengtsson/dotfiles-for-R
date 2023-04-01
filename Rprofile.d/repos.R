@@ -149,5 +149,29 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
   
     options(repos = repos)
   })
+
+  ## Use RStudio Package Manager (RSPM) to install
+  ## prebuild packages for Ubuntu 22.04 Linux?
+  if (.Platform$OS.type == "unix") {
+    ver <- Sys.info()[["version"]]
+    distro <- if (grepl("22[.]04.*Ubuntu", ver)) {
+      "jammy"
+    } else {
+      NA_character_
+    }
+    if (!is.na(distro)) {
+      options(repos = c(
+        RSPM = sprintf("https://packagemanager.rstudio.com/cran/__linux__/%s/latest", distro),
+        getOption("repos")
+      ))
+
+      options(
+        HTTPUserAgent = sprintf("R/%s R (%s)",
+          getRversion(),
+          paste(getRversion(), R.version$platform, R.version$arch, R.version$os)
+        )
+      )
+    }
+  }
 }
 
