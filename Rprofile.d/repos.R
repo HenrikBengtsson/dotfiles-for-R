@@ -24,8 +24,8 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
       .read_repositories <- NULL
       for (pkg in c("tools", "utils")) {
         ns <- getNamespace(pkg)
-        if (exists(".read_repositories", envir = ns)) {
-          .read_repositories <- get(".read_repositories", envir = ns)
+        if (exists(".read_repositories", envir = ns, inherits = FALSE)) {
+          .read_repositories <- get(".read_repositories", envir = ns, inherits = FALSE)
           break
         }
       }
