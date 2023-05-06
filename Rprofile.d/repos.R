@@ -75,7 +75,7 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
       # Ad hoc via the R version
       rver <- getRversion()
       biocver <- {
-        if (rver >= "4.3.0") "3.17" else ## per 2022-11-02
+        if (rver >= "4.3.0") "3.17" else ## per 2023-04-26
         if (rver >= "4.2.2") "3.16" else ## per 2022-11-02
         if (rver >= "4.2.0") "3.15" else ## per 2022-04-27
         if (rver >= "4.1.1") "3.14" else ## per 2021-10-27
@@ -113,7 +113,6 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
                        "https://www.stats.ox.ac.uk/pub/RWin"
                      },
       "R-Forge"    = "http://R-Forge.R-project.org",
-      "Omegahat"   = "http://www.omegahat.org/R",
       "rforge.net" = "https://www.rforge.net"
     )
   
@@ -121,7 +120,7 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
     repos <- grep("^@.*@$", repos, invert=TRUE, value=TRUE)
   
     # Drop miscellaneous 
-    repos <- repos[!grepl("(CRANextra|Omegahat|R-Forge|rforge.net)", names(repos))]
+    repos <- repos[!grepl("(CRANextra|R-Forge|rforge.net)", names(repos))]
   
     # Bioconductor tweaks
     if (!is.na(biocver)) {
