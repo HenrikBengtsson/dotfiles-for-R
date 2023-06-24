@@ -65,7 +65,9 @@ news_to_md <- function(pkg = ".", input = "NEWS", output = "NEWS.md", overwrite 
     categories <- split(release, release$Category)
     
     ## Preserve order according to NEWS
-    if (length(categories) > 1) {
+    if (length(categories) == 0) {
+      stop(sprintf("Detected empty field 'Category' for NEWS entry %s", header))
+    } else if (length(categories) > 1) {
       categories <- categories[unique(release$Category)]
     }
 
