@@ -1,1 +1,1 @@
-tryCatch(startup::startup(), error=function(ex) message(".Rprofile error: ", conditionMessage(ex)))
+tryCatch(startup::startup(all = TRUE), error=function(ex) message(".Rprofile error: ", conditionMessage(ex)))
