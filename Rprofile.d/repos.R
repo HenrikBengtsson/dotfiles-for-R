@@ -150,11 +150,13 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
   })
 
   ## Use RStudio Package Manager (RSPM) to install
-  ## prebuild packages for Ubuntu 22.04 Linux?
+  ## prebuild packages for Linux?
   if (.Platform$OS.type == "unix") {
     ver <- Sys.info()[["version"]]
     distro <- if (grepl("22[.]04.*Ubuntu", ver)) {
-      "jammy"
+      "jammy" ## Ubuntu 22.04
+    } else if (grepl("#170-Ubuntu", ver)) {
+      "focal" ## Ubuntu 20.04
     } else {
       NA_character_
     }
