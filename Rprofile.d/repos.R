@@ -46,7 +46,7 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
         biocver <- as.character(utils::packageVersion("BiocVersion")[, 1:2])
       }, error = identity)
       if (nzchar(biocver)) return(biocver)
-  
+
       # Via the BiocManager package?
       ## WORKAROUND: BiocManager::version() can be very slow
       ## because it calls installed.packages().
@@ -71,7 +71,7 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
         }
         if (nzchar(biocver)) return(biocver)
       }, error = identity)
-  
+
       # Ad hoc via the R version
       rver <- getRversion()
       biocver <- {

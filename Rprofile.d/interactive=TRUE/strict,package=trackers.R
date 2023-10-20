@@ -9,6 +9,10 @@ if (interactive()) {
   trackers::track_rplots_files()
   trackers::track_sinks()
   trackers::track_connections()
+
+  ## Never allow base::closeAllConnections() from taking place
+  trackers::trace_closeAllConnections(action = "error")
+
   ## FIXME: The following results in loadNamespace("pkgload") giving an error
   ## /2023-03-09
 #  trackers::trace_rng_on_load("on")
