@@ -14,8 +14,13 @@
 #' To disable it, set R option `cli.num_colors=1` or environment
 #' variable `NO_COLOR=false`.
 #'
+#' If \pkg{globals} is installed, then objects that are used by function
+#' `x` and that live in other namespaces (packages) are listed as a
+#' **roxygen2** `@importFrom` comment.
+#'
 #' @imports prettycode
-#' @imports utils getSrcFilename getSrcLocation
+#' @importFrom utils getSrcFilename getSrcLocation
+#' @importFrom globals globalsOf cleanup
 print.function <- local({
     ## https://cran.r-project.org/web/packages/prettycode
     if (requireNamespace("prettycode", quietly = TRUE)) {
@@ -25,7 +30,41 @@ print.function <- local({
     }
     
     function(x, useSource = TRUE, ...) {
-        print_function(x, useSource=useSource, ...)
+        if (requireNamespace("globals", quietly = TRUE)) {
+            envir <- environment(x)
+            globals <- globals::globalsOf(x, envir = envir, mustExist = FALSE)
+            globals <- globals::cleanup(globals)
+            where <- attr(globals, "where")
+            keep <- !vapply(where, FUN = identical, envir, FUN.VALUE = NA)
+            where <- where[keep]
+            while (environmentName(envir) == "") {
+              envir <- parent.env(envir)
+            }
+            keep <- !vapply(where, FUN = identical, envir, FUN.VALUE = NA)
+            where <- where[keep]
+            names <- lapply(where, FUN = environmentName)
+            idxs <- grep("^imports:", names)
+            for (idx in idxs) {
+              name <- names(where)[idx]
+              pkg <- sub("^imports:", "", names[idx])
+              ns <- getNamespace(pkg)
+              imports <- ns[[".__NAMESPACE__."]][["imports"]]
+              if (length(imports) == 0) next
+              froms <- names(imports)
+              keep <- vapply(imports, FUN = is.element, name, FUN.VALUE = NA)
+              from <- froms[keep]
+              stopifnot(length(from) == 1L)
+              names[idx] <- from
+            }
+
+            pkgs <- unlist(names)
+            
+            for (pkg in unique(pkgs)) {
+              cat(sprintf("#' @importFrom %s %s\n", pkg, paste(names(pkgs)[pkgs == pkg], collapse = " ")))
+            }
+        }
+  
+        print_function(x, useSource = useSource, ...)
         pathname <- utils::getSrcFilename(x, full.names = TRUE)
         pathname <- pathname[nzchar(pathname)]
         if (length(pathname) > 0L) {
