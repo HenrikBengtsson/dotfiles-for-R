@@ -30,6 +30,7 @@ print.function <- local({
     }
     
     function(x, useSource = TRUE, ...) {
+        ## 1. Generate @importFrom comments
         if (requireNamespace("globals", quietly = TRUE)) {
             envir <- environment(x)
             globals <- globals::globalsOf(x, envir = envir, mustExist = FALSE)
@@ -63,8 +64,11 @@ print.function <- local({
               cat(sprintf("#' @importFrom %s %s\n", pkg, paste(names(pkgs)[pkgs == pkg], collapse = " ")))
             }
         }
-  
+
+        ## 2. Print function
         print_function(x, useSource = useSource, ...)
+
+        ## 3. Add source file information
         pathname <- utils::getSrcFilename(x, full.names = TRUE)
         pathname <- pathname[nzchar(pathname)]
         if (length(pathname) > 0L) {
@@ -81,6 +85,7 @@ print.function <- local({
             }
             cat(sprintf("<srcfile: %s>\n", info))
         }
+        
         invisible(x)
     }
 })
