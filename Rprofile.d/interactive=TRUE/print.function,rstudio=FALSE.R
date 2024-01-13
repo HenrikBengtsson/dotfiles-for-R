@@ -30,9 +30,10 @@ print.function <- local({
     }
     
     function(x, useSource = TRUE, ...) {
+        envir <- environment(x)
+        
         ## 1. Generate @importFrom comments
-        if (requireNamespace("globals", quietly = TRUE)) {
-            envir <- environment(x)
+        if (!is.null(envir) && requireNamespace("globals", quietly = TRUE)) {
             globals <- globals::globalsOf(x, envir = envir, mustExist = FALSE)
             globals <- globals::cleanup(globals)
             where <- attr(globals, "where")
@@ -67,7 +68,7 @@ print.function <- local({
 
         ## 2. Print function
         print_function(x, useSource = useSource, ...)
-
+        
         ## 3. Add source file information
         pathname <- utils::getSrcFilename(x, full.names = TRUE)
         pathname <- pathname[nzchar(pathname)]
