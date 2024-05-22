@@ -154,12 +154,16 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
   ## prebuild packages for Linux?
   if (.Platform$OS.type == "unix") {
     ver <- Sys.info()[["version"]]
-    distro <- if (grepl("22[.]04.*Ubuntu", ver)) {
-      "jammy" ## Ubuntu 22.04
-    } else if (grepl("#170-Ubuntu", ver)) {
-      "focal" ## Ubuntu 20.04
-    } else {
-      NA_character_
+    distro <- NA_character_
+    if (grepl("Ubuntu", ver)) {
+      if (grepl("22[.]04.*Ubuntu", ver)) {
+         distro <- "jammy" ## Ubuntu 22.04
+      } else if (grepl("20[.]04.*Ubuntu", ver)) {
+         distro <- "focal" ## Ubuntu 20.04
+      } else if (file.exists("/etc/os-release")) {
+         distro <- grep("^UBUNTU_CODENAME=", readLines("/etc/os-release"), value = TRUE)
+         distro <- sub("^UBUNTU_CODENAME=", "", distro)
+      }
     }
     if (!is.na(distro)) {
       options(repos = c(
