@@ -29,7 +29,7 @@ options(browser = function(url) {
   is_html_file <- grepl("[.](htm|html)$", url, ignore.case = TRUE)
 
   ## Special case: Firefox does not allow to open local HTML files
-  if (is_html_file && (!is_url || is_file_uri)) {
+  if (is_html_file && (!is_uri || is_file_uri)) {
     bin <- Sys.which("google-chrome")
     if (!nzchar(bin)) stop("Please install google-chrome")
   } else {
