@@ -167,7 +167,7 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
     }
     if (!is.na(distro)) {
       options(repos = c(
-        RSPM = sprintf("https://packagemanager.rstudio.com/cran/__linux__/%s/latest", distro),
+        RSPM = sprintf("https://packagemanager.posit.co/cran/__linux__/%s/latest", distro),
         getOption("repos")
       ))
 
