@@ -10,7 +10,7 @@ if (interactive()) {
   trackers::track_sinks()
   trackers::track_connections()
   trackers::track_gc()
-  trackers::track_time()
+  trackers::track_time(threshold = 2.0)
 
   ## Never allow base::closeAllConnections() from taking place
   trackers::trace_closeAllConnections(action = "error")

@@ -16,7 +16,7 @@ if (interactive() && requireNamespace("startup", quietly = TRUE)) {
         sprintf(" * R version: %s", getRversion()),
         sprintf(" * Hostname: %s", Sys.info()[["nodename"]]),
         sprintf(" * Process ID: %d", Sys.getpid()),
-        sprintf(" * Garbage collection time: %s (%s)", paste(sprintf("%s=%.2f", names(dt_gc), dt_gc), collapse = ", "), attr(dt_gc, "units")),
+        sprintf(" * Garbage collection time: %s (%s)", paste(sprintf("%s=%.2f (%.1f%%)", names(dt_gc), dt_gc, 100 * dt_gc / dt_p), collapse = ", "), attr(dt_gc, "units")),
         sprintf(" * Processing time: %s (secs)", paste(sprintf("%s=%.2f", names(dt_p), dt_p), collapse = ", ")),
         sprintf(" * Wall time: %.2f %s", dt, attr(dt, "units"))
       )
