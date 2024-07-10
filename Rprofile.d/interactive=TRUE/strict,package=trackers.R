@@ -9,6 +9,7 @@ if (interactive()) {
   trackers::track_rplots_files()
   trackers::track_sinks()
   trackers::track_connections()
+  trackers::track_gc()
 
   ## Never allow base::closeAllConnections() from taking place
   trackers::trace_closeAllConnections(action = "error")

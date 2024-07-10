@@ -1,3 +1,4 @@
 R_PROFILE_USER=${R_PROFILE_USER:-~/.config/R/startup/Rprofile}
+SECRET=develop
 
 
