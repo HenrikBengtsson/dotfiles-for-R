@@ -62,6 +62,7 @@ local({
 
   actions <- c(
     ## GitHub
+    "actions/cache@v4",
     "actions/checkout@v4",
     "actions/upload-artifact@v4",
     ## r-lib
