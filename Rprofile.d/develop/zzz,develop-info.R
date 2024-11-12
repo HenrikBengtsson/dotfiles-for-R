@@ -77,6 +77,8 @@ local({
   for (file in gha_files) {
     old <- NULL
     bfr <- readLines(file, warn = FALSE)
+    
+    ## Any outdated actions?
     for (action in actions) {
       version <- sub(".*@", "", action)
       action <- sub("@.*", "", action)
@@ -90,6 +92,12 @@ local({
     }
     if (length(old) > 0) {
       warning(sprintf("%s uses outdated actions: [n=%d] %s\n", file, length(old), paste(old, collapse = ", ")), immediate. = TRUE, call. = FALSE)
+    }
+
+    ## Any outdated R versions?
+    old <- grep("r: '3[.][0-5]'", bfr, value = TRUE)
+    if (length(old) > 0) {
+      warning(sprintf("%s uses outdated R versions: [n=%d] %s\n", file, length(old), paste(old, collapse = ", ")), immediate. = TRUE, call. = FALSE)
     }
   }
 
