@@ -44,7 +44,7 @@ local({
 
   gha_files <- if (utils::file_test("-d", ".github/workflows")) {
     dir(path = ".github/workflows", pattern = "[.](yml|yaml)$", full.names = TRUE)
-  }
+  } else { character(0L) }
 
   message(sprintf(fmtstr,   
     pkg, pkg_ver, ver,
