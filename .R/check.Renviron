@@ -1,3 +1,11 @@
+## Identify locations of issues like:
+## * Found the following significant warnings:
+##    Note: next used in wrong context: no loop is visible
+R_KEEP_PKG_SOURCE=yes
+
+## Skip 'checking for future file timestamps'
+_R_CHECK_SYSTEM_CLOCK_=false
+
 ## ----------------------------------------------------------------
 ## R (>= 4.5.0)
 ## ----------------------------------------------------------------
