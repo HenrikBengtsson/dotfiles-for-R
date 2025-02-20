@@ -53,7 +53,7 @@ print.function <- local({
               imports <- ns[[".__NAMESPACE__."]][["imports"]]
               if (length(imports) == 0) next
               froms <- names(imports)
-              keep <- vapply(imports, FUN = is.element, name, FUN.VALUE = NA)
+              keep <- vapply(imports, FUN = function(names) any(is.element(names, name)), FUN.VALUE = NA)
               from <- froms[keep]
               stopifnot(length(from) == 1L)
               names[idx] <- from
