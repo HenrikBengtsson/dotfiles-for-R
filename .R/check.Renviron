@@ -6,6 +6,11 @@ R_KEEP_PKG_SOURCE=yes
 ## Skip 'checking for future file timestamps'
 _R_CHECK_SYSTEM_CLOCK_=false
 
+## Disable 'CRAN incoming feasibility' checks
+## Works also with --as-cran
+_R_CHECK_CRAN_INCOMING_=false
+
+
 ## ----------------------------------------------------------------
 ## R (>= 4.5.0)
 ## ----------------------------------------------------------------
