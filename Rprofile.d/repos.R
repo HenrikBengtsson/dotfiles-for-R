@@ -1,4 +1,4 @@
-#' Configure option 'repos' for CRAN and Bioconductor
+#' Settings for CRAN, Bioconductor, and Posit Package Manager
 #'
 #' The Bioconductor version is inferred from:
 #'
@@ -9,6 +9,7 @@
 #'
 #' Options that are set:
 #' * `repos`
+#' * `HTTPUserAgent` (if Posit Package Manager is used)
 #'
 #' Environment variables that are set:
 #' * `R_BIOC_VERSION`
@@ -17,6 +18,9 @@
 #' @imports utils BiocVersion BiocManager startup
 if (!nzchar(Sys.getenv("R_CMD"))) {
   local({
+    ## -----------------------------------------------------------------
+    ## CRAN repository
+    ## -----------------------------------------------------------------
     known_repos <- function() {
       p <- file.path(Sys.getenv("HOME"), ".R", "repositories")
       if (!file.exists(p)) p <- file.path(R.home("etc"), "repositories")
@@ -31,11 +35,15 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
       }
       ## NOTE: The following gives an error, if 'R_BIOC_VERSION' is not set
       a <- .read_repositories(p)
-      repos <- a$URL
+      repos <- a[["URL"]]
       names(repos) <- rownames(a)
       repos
     }
-  
+
+
+    ## -----------------------------------------------------------------
+    ## Bioconductor repository
+    ## -----------------------------------------------------------------
     ## Bioconductor version
     bioc_version <- function() {
       biocver <- Sys.getenv("R_BIOC_VERSION")
@@ -110,7 +118,7 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
       getOption("repos"),
       known_repos(),
       "CRAN"       = "https://cloud.r-project.org",
-      "CRANextra"  = if (.Platform$OS.type == "windows") {
+      "CRANextra"  = if (.Platform[["OS.type"]] == "windows") {
                        "https://www.stats.ox.ac.uk/pub/RWin"
                      },
       "R-Forge"    = "http://R-Forge.R-project.org",
@@ -138,7 +146,7 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
     if (!is.na(idx)) repos <- c(repos[idx], repos[-idx])
     
     # Use HTTP when HTTPS is not supported
-    if (getRversion() < "3.2.2" || startup::sysinfo()$wine) {
+    if (getRversion() < "3.2.2" || startup::sysinfo()[["wine"]]) {
       repos <- gsub("https://", "http://", repos, fixed = TRUE)
     }
   
@@ -150,34 +158,72 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
     options(repos = repos)
   })
 
-  ## Use RStudio Package Manager (RSPM) to install
-  ## prebuild packages for Linux?
-  if (.Platform$OS.type == "unix") {
-    ver <- Sys.info()[["version"]]
+
+  ## -------------------------------------------------------------------
+  ## Posit Package Manager (PPM)
+  ## -------------------------------------------------------------------
+  ## Use Posit Package Manager to install prebuild packages for Linux?
+  if (.Platform[["OS.type"]] == "unix") {
     distro <- NA_character_
+
+    ## Infer Linux distro from Sys.info()?
+    ver <- Sys.info()[["version"]]
     if (grepl("Ubuntu", ver)) {
       if (grepl("22[.]04.*Ubuntu", ver)) {
          distro <- "jammy" ## Ubuntu 22.04
       } else if (grepl("20[.]04.*Ubuntu", ver)) {
          distro <- "focal" ## Ubuntu 20.04
-      } else if (file.exists("/etc/os-release")) {
-         distro <- grep("^UBUNTU_CODENAME=", readLines("/etc/os-release"), value = TRUE)
-         distro <- sub("^UBUNTU_CODENAME=", "", distro)
       }
     }
+
+    ## Infer Linux distro from /etc/os-release?
+    if (is.na(distro) && file.exists("/etc/os-release")) {
+       get_field <- function(name, bfr) {
+         pattern <- sprintf("^%s=", name)
+         value <- grep(pattern, bfr, value = TRUE)
+         gsub('(^[^=]+=["]?|["]?$)', "", value)
+       }
+       bfr <- readLines("/etc/os-release")
+
+       ## Condition on Linux distribution
+       name <- get_field("NAME", bfr)
+       if (name == "Ubuntu") {
+         codename <- get_field("VERSION_CODENAME", bfr)
+         if (nzchar(codename)) {
+           distro <- codename
+         }
+       } else if (name == "Rocky Linux") {
+         platform_id <- get_field("PLATFORM_ID", bfr)
+         if (nzchar(platform_id)) {
+           pattern <- "^platform:(el[[:digit:]]+)$"
+           if (grep(pattern, platform_id)) {
+             rhel_id <- gsub(pattern, "\\1", platform_id)
+             rhel_id <- sprintf("rh%s", rhel_id)
+             if (rhel_id %in% c("rhel9")) {
+               distro <- rhel_id
+             }
+           }
+         }
+       }
+    }
+
     if (!is.na(distro)) {
       options(repos = c(
-        RSPM = sprintf("https://packagemanager.posit.co/cran/__linux__/%s/latest", distro),
+        PPM = sprintf("https://packagemanager.posit.co/cran/__linux__/%s/latest", distro),
         getOption("repos")
       ))
 
       options(
         HTTPUserAgent = sprintf("R/%s R (%s)",
           getRversion(),
-          paste(getRversion(), R.version$platform, R.version$arch, R.version$os)
+          paste(
+            getRversion(),
+            R.version[["platform"]],
+            R.version[["arch"]],
+            R.version[["os"]]
+          )
         )
       )
     }
   }
 }
-
