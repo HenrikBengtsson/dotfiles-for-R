@@ -30,6 +30,7 @@ local({
  - package: %s\
  - devel version: %s\
  - installed version: %s\
+ - CRAN: %d days (>= 7) since last update, %d updates (<= 6) in 180 days\
  - URL: %s
  - R version: %s (%s)\
  - R_LIBS_USER: %s\
@@ -42,12 +43,38 @@ local({
  - .github/workflows/: %s\n"
   }
 
+  now <- Sys.time()
+  path <- tools::R_user_dir("startup", which = "cache")
+  file <- file.path(path, "cran-archive-db.rds")
+  mtime <- file.info(file)[["mtime"]]
+  if (is.na(mtime) || mtime - now > 3600) {
+    archive_db <- tools::CRAN_archive_db()
+    saveRDS(archive_db, file = file)
+  } else {
+    archive_db <- readRDS(file)
+  }
+  file <- file.path(path, "cran-current-db.rds")
+  mtime <- file.info(file)[["mtime"]]
+  if (is.na(mtime) || mtime - now > 3600) {
+    current_db <- tools::CRAN_current_db()
+    saveRDS(current_db, file = file)
+  } else {
+    current_db <- readRDS(file)
+  }
+  mtimes <- c(current_db[match(pkg, sub("_.*", "", rownames(current_db)), nomatch = 0L), "mtime"], archive_db[[pkg]]$mtime)
+  deltas <- Sys.Date() - as.Date(sort(mtimes, decreasing = TRUE))
+  ## Number of days since last update
+  recency <- as.numeric(deltas[1L])
+  ## Number of updates in the last 180 days
+  frequency <- sum(deltas <= 180)
+
   gha_files <- if (utils::file_test("-d", ".github/workflows")) {
     dir(path = ".github/workflows", pattern = "[.](yml|yaml)$", full.names = TRUE)
   } else { character(0L) }
 
   message(sprintf(fmtstr,   
     pkg, pkg_ver, ver,
+    recency, frequency,
     url,
     getRversion(), R.home(),
     Sys.getenv("R_LIBS_USER"),
