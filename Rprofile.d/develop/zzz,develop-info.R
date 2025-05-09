@@ -30,7 +30,7 @@ local({
  - package: %s\
  - devel version: %s\
  - installed version: %s\
- - CRAN: %d days (>= 7) since last update, %d updates (<= 6) in 180 days\
+ - CRAN: %d days (>= 7 days) since last update, %d updates (<= 6) in 180 days (days to-go: %s)\
  - URL: %s
  - R version: %s (%s)\
  - R_LIBS_USER: %s\
@@ -67,14 +67,16 @@ local({
   recency <- as.numeric(deltas[1L])
   ## Number of updates in the last 180 days
   frequency <- sum(deltas <= 180)
-
+  deltas <- 180 - deltas
+  if (length(deltas) > frequency + 2) deltas <- deltas[1:(frequency+2)]
+  
   gha_files <- if (utils::file_test("-d", ".github/workflows")) {
     dir(path = ".github/workflows", pattern = "[.](yml|yaml)$", full.names = TRUE)
   } else { character(0L) }
 
   message(sprintf(fmtstr,   
     pkg, pkg_ver, ver,
-    recency, frequency,
+    recency, frequency, paste(deltas, collapse = ", "),
     url,
     getRversion(), R.home(),
     Sys.getenv("R_LIBS_USER"),
