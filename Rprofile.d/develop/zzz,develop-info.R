@@ -47,7 +47,7 @@ local({
   path <- tools::R_user_dir("startup", which = "cache")
   file <- file.path(path, "cran-archive-db.rds")
   mtime <- file.info(file)[["mtime"]]
-  if (is.na(mtime) || mtime - now > 3600) {
+  if (is.na(mtime) || difftime(now, mtime, units = "hours") > 1.0) {
     archive_db <- tools::CRAN_archive_db()
     saveRDS(archive_db, file = file)
   } else {
@@ -55,7 +55,7 @@ local({
   }
   file <- file.path(path, "cran-current-db.rds")
   mtime <- file.info(file)[["mtime"]]
-  if (is.na(mtime) || mtime - now > 3600) {
+  if (is.na(mtime) || difftime(now, mtime, units = "hours") > 1.0) {
     current_db <- tools::CRAN_current_db()
     saveRDS(current_db, file = file)
   } else {
