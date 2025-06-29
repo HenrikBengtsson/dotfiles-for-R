@@ -47,19 +47,26 @@ local({
   path <- tools::R_user_dir("startup", which = "cache")
   file <- file.path(path, "cran-archive-db.rds")
   mtime <- file.info(file)[["mtime"]]
-  if (is.na(mtime) || difftime(now, mtime, units = "hours") > 1.0) {
+  if (!is.na(mtime) && difftime(now, mtime, units = "hours") < 12.0) {
+    archive_db <- tryCatch(readRDS(file), error = function(e) NULL)
+  } else {
+    archive_db <- NULL
+  }
+  if (is.null(archive_db)) {
     archive_db <- tools::CRAN_archive_db()
     saveRDS(archive_db, file = file)
-  } else {
-    archive_db <- readRDS(file)
   }
+  
   file <- file.path(path, "cran-current-db.rds")
   mtime <- file.info(file)[["mtime"]]
-  if (is.na(mtime) || difftime(now, mtime, units = "hours") > 1.0) {
+  if (!is.na(mtime) && difftime(now, mtime, units = "hours") < 12.0) {
+    current_db <- tryCatch(readRDS(file), error = function(e) NULL)
+  } else {
+    current_db <- NULL
+  }
+  if (is.null(current_db)) {
     current_db <- tools::CRAN_current_db()
     saveRDS(current_db, file = file)
-  } else {
-    current_db <- readRDS(file)
   }
   mtimes <- c(current_db[match(pkg, sub("_.*", "", rownames(current_db)), nomatch = 0L), "mtime"], archive_db[[pkg]]$mtime)
   deltas <- Sys.Date() - as.Date(sort(mtimes, decreasing = TRUE))
