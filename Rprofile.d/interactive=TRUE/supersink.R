@@ -1,7 +1,7 @@
 #' Circumvent standard output being sink:ed when debugging with browser
 #' 
 #' @examples interactive()
-#' test <- function() browser()
+#' test <- function() base::browser()
 #' out <- utils::capture.output(test())
 #' #> Browse[1]> 1+2
 #' #> Browse[1]> supersink()
