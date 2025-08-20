@@ -53,7 +53,7 @@ local({
     archive_db <- NULL
   }
   if (is.null(archive_db)) {
-    archive_db <- tools::CRAN_archive_db()
+    archive_db <- if (getRversion() >= "4.5.0") tools::CRAN_archive_db() else tools:::CRAN_archive_db()
     saveRDS(archive_db, file = file)
   }
   
@@ -65,7 +65,7 @@ local({
     current_db <- NULL
   }
   if (is.null(current_db)) {
-    current_db <- tools::CRAN_current_db()
+    current_db <- if (getRversion() >= "4.5.0") tools::CRAN_current_db() else tools:::CRAN_current_db()
     saveRDS(current_db, file = file)
   }
   mtimes <- c(current_db[match(pkg, sub("_.*", "", rownames(current_db)), nomatch = 0L), "mtime"], archive_db[[pkg]]$mtime)
