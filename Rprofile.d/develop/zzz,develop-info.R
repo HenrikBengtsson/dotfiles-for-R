@@ -45,6 +45,7 @@ local({
 
   now <- Sys.time()
   path <- tools::R_user_dir("startup", which = "cache")
+  if (!utils::file_test("-d", path)) dir.create(path, recursive = TRUE)
   file <- file.path(path, "cran-archive-db.rds")
   mtime <- file.info(file)[["mtime"]]
   if (!is.na(mtime) && difftime(now, mtime, units = "hours") < 12.0) {
