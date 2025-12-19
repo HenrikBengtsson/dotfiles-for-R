@@ -1,5 +1,5 @@
 #'
-local({
+invisible(local({
   editor <- getOption("editor")
   
   ## Not set?
@@ -14,4 +14,4 @@ local({
     system(sprintf("%s %s", editor, shQuote(file)))
   }
   options(editor = editor_fcn)
-})
+}))
