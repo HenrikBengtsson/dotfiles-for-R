@@ -79,7 +79,7 @@ function_imports <- function(x) {
 #' 
 #' @imports prettycode
 #' @importFrom utils getSrcFilename getSrcLocation
-print_function <- local({
+print_function_with_annotations <- local({
     ## https://cran.r-project.org/web/packages/prettycode
     if (requireNamespace("prettycode", quietly = TRUE)) {
         print_function <- prettycode:::print.function
@@ -143,8 +143,24 @@ print_expression <- local({
 })
 
 
-## Override the default print() method for 'function'
-print.function <- print_function
+## Override print() for 'function'
+print.function <- print_function_with_annotations
+
+## Override print() for 'S7_method' 
+print.S7_method <- local({
+  .fcn <- NULL
+  
+  function(...) {
+    if (is.null(.fcn)) {
+      fcn <- S7:::print.S7_method
+      env <- new.env(parent = environment(fcn))
+      env$print <- print_function_with_annotations
+      environment(fcn) <- env
+      .fcn <<- fcn
+    }
+    .fcn(...)
+  }
+})
 
 print.call <- print_expression
 
