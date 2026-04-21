@@ -1,3 +1,59 @@
+#' Finds Function Dependencies
+#'
+#' @param x A [base::function]
+#'
+#' @return A names list of imports.
+#' The names corresponds to the packages being imported, and the
+#' elements corresponds to objects being imported from each package.
+#' If `x` does not have an environment, then NULL is returned.
+#'
+#' @details
+#' This function requires the \pkg{globals} package.
+#'
+#' @examples
+#' imports <- function_imports(purrr::map_df)
+#' str(imports)
+#' 
+#' @importFrom globals globalsOf cleanup
+function_imports <- function(x) {
+  envir <- environment(x)
+  if (is.null(envir)) return(NULL)
+  globals <- globals::globalsOf(x, envir = envir, mustExist = FALSE)
+  globals <- globals::cleanup(globals)
+  where <- attr(globals, "where")
+  keep <- !vapply(where, FUN = identical, envir, FUN.VALUE = NA)
+  where <- where[keep]
+  while (environmentName(envir) == "") {
+    envir <- parent.env(envir)
+  }
+  keep <- !vapply(where, FUN = identical, envir, FUN.VALUE = NA)
+  where <- where[keep]
+  names <- lapply(where, FUN = environmentName)
+  idxs <- grep("^imports:", names)
+  for (idx in idxs) {
+    name <- names(where)[idx]
+    pkg <- sub("^imports:", "", names[idx])
+    ns <- getNamespace(pkg)
+    imports <- ns[[".__NAMESPACE__."]][["imports"]]
+    if (length(imports) == 0) next
+    froms <- names(imports)
+    keep <- vapply(imports, FUN = function(names) any(is.element(names, name)), FUN.VALUE = NA)
+    from <- froms[keep]
+    stopifnot(length(from) == 1L)
+    names[idx] <- from
+  }
+
+  ## Group my packages
+  names <- unlist(names, use.names = TRUE)
+  pkgs <- unique(names)
+  imports <- list()
+  for (pkg in pkgs) {
+    imports[[pkg]] <- names(names == pkg)
+  }
+  imports
+}
+
+
 #' Print Functions with Additional Source Information
 #'
 #' @param x A [base::function]
@@ -18,10 +74,12 @@
 #' `x` and that live in other namespaces (packages) are listed as a
 #' **roxygen2** `@importFrom` comment.
 #'
+#' @examples
+#' print_function(purrr::map_df)
+#' 
 #' @imports prettycode
 #' @importFrom utils getSrcFilename getSrcLocation
-#' @importFrom globals globalsOf cleanup
-print.function <- local({
+print_function <- local({
     ## https://cran.r-project.org/web/packages/prettycode
     if (requireNamespace("prettycode", quietly = TRUE)) {
         print_function <- prettycode:::print.function
@@ -32,37 +90,11 @@ print.function <- local({
     function(x, useSource = TRUE, ...) {
         envir <- environment(x)
         
-        ## 1. Generate @importFrom comments
+        ## 1. Generate @importFrom comments, if possible
         if (!is.null(envir) && requireNamespace("globals", quietly = TRUE)) {
-            globals <- globals::globalsOf(x, envir = envir, mustExist = FALSE)
-            globals <- globals::cleanup(globals)
-            where <- attr(globals, "where")
-            keep <- !vapply(where, FUN = identical, envir, FUN.VALUE = NA)
-            where <- where[keep]
-            while (environmentName(envir) == "") {
-              envir <- parent.env(envir)
-            }
-            keep <- !vapply(where, FUN = identical, envir, FUN.VALUE = NA)
-            where <- where[keep]
-            names <- lapply(where, FUN = environmentName)
-            idxs <- grep("^imports:", names)
-            for (idx in idxs) {
-              name <- names(where)[idx]
-              pkg <- sub("^imports:", "", names[idx])
-              ns <- getNamespace(pkg)
-              imports <- ns[[".__NAMESPACE__."]][["imports"]]
-              if (length(imports) == 0) next
-              froms <- names(imports)
-              keep <- vapply(imports, FUN = function(names) any(is.element(names, name)), FUN.VALUE = NA)
-              from <- froms[keep]
-              stopifnot(length(from) == 1L)
-              names[idx] <- from
-            }
-
-            pkgs <- unlist(names)
-            
-            for (pkg in unique(pkgs)) {
-              cat(sprintf("#' @importFrom %s %s\n", pkg, paste(names(pkgs)[pkgs == pkg], collapse = " ")))
+            imports <- function_imports(x)
+            for (pkg in names(imports)) {
+              cat(sprintf("#' @importFrom %s %s\n", pkg, paste(imports[[pkg]], collapse = " ")))
             }
         }
 
@@ -92,7 +124,6 @@ print.function <- local({
 })
 
 
-
 print_expression <- local({
     ## https://cran.r-project.org/web/packages/prettycode
     if (requireNamespace("prettycode", quietly = TRUE)) {
@@ -111,6 +142,9 @@ print_expression <- local({
      }
 })
 
+
+## Override the default print() method for 'function'
+print.function <- print_function
 
 print.call <- print_expression
 
