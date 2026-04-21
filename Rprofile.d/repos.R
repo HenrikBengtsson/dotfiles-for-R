@@ -172,7 +172,9 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
     ## Infer Linux distro from Sys.info()?
     ver <- Sys.info()[["version"]]
     if (grepl("Ubuntu", ver)) {
-      if (grepl("22[.]04.*Ubuntu", ver)) {
+      if (grepl("24[.]04.*Ubuntu", ver)) {
+         distro <- "noble" ## Ubuntu 24.04
+      } else if (grepl("22[.]04.*Ubuntu", ver)) {
          distro <- "jammy" ## Ubuntu 22.04
       } else if (grepl("20[.]04.*Ubuntu", ver)) {
          distro <- "focal" ## Ubuntu 20.04
@@ -212,6 +214,8 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
 
     if (!is.na(distro)) {
       options(repos = c(
+        ## FIXME: These days, according to https://p3m.dev/client/#/repos/cran/setup?distribution=ubuntu-24.04&r_environment=other, one can use something like:
+        ## PPM = sprintf("https://p3m.dev/cran/latest/bin/linux/%s-%s/%s", distro, R.version["arch"], substr(getRversion(), 1, 3))
         PPM = sprintf("https://packagemanager.posit.co/cran/__linux__/%s/latest", distro),
         getOption("repos")
       ))
