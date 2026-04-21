@@ -48,7 +48,7 @@ function_imports <- function(x) {
   pkgs <- unique(names)
   imports <- list()
   for (pkg in pkgs) {
-    imports[[pkg]] <- names(names == pkg)
+    imports[[pkg]] <- names(names[names == pkg])
   }
   imports
 }
