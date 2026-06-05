@@ -204,7 +204,7 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
            if (grep(pattern, platform_id)) {
              rhel_id <- gsub(pattern, "\\1", platform_id)
              rhel_id <- sprintf("rh%s", rhel_id)
-             if (rhel_id %in% c("rhel9")) {
+             if (FALSE && rhel_id %in% c("rhel9")) { ## FIXME: Disable on CoreHPC for now
                distro <- rhel_id
              }
            }
