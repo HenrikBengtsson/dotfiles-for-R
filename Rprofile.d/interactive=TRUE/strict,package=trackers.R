@@ -15,6 +15,10 @@ if (interactive()) {
   ## Never allow base::closeAllConnections() from taking place
   trackers::trace_closeAllConnections(action = "error")
 
+  ## Report on all parallel::detectCores() calls
+  allow <- list(parallelly = quote(availableCores))
+  trackers::trace_detectCores(allow = allow)
+
   ## FIXME: The following results in loadNamespace("pkgload") giving an error
   ## /2023-03-09
 #  trackers::trace_rng_on_load("on")
