@@ -21,7 +21,7 @@ install-startup:
 
 install-cran:
 	## CRAN
-	Rscript -e 'install.packages(c("tuneR", "progressr", "foghorn", "R.utils", "prompt", "fortunes", "ps", "crayon", "profmem", "prettycode"))'
+	Rscript -e 'install.packages(c("tuneR", "progressr", "foghorn", "R.utils", "prompt", "fortunes", "ps", "crayon", "profmem", "prettycode", "clisymbols", "rappdirs"))'
 
 install-bioc:
 	## Bioconductor
