@@ -11,7 +11,7 @@
 ctv_install_packages <- function(view, repos = getOption("repos")[["CRAN"]], ...) {
   pkgs <- ctv::ctv(view, repos = repos)$packagelist$name
   stopifnot(length(pkgs) > 0)
-  pkgs <- setdiff(pkgs, installed.packages()[,"Package"])
-  install.packages(pkgs, ...)
+  todo <- setdiff(pkgs, installed.packages()[,"Package"])
+  install.packages(todo, ...)
   invisible(pkgs)
 }
