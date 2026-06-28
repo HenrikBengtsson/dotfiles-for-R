@@ -83,7 +83,8 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
       # Ad hoc via the R version
       rver <- getRversion()
       biocver <- {
-        if (rver >= "4.5.0") "3.21" else ## per 2024-10-30
+        if (rver >= "4.6.0") "3.23" else ## per 2026-04-29
+        if (rver >= "4.5.0") "3.21" else ## per 2025-04-16
         if (rver >= "4.4.2") "3.20" else ## per 2024-10-30
         if (rver >= "4.4.0") "3.19" else ## per 2024-05-01
         if (rver >= "4.3.1") "3.18" else ## per 2023-10-25
@@ -172,7 +173,9 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
     ## Infer Linux distro from Sys.info()?
     ver <- Sys.info()[["version"]]
     if (grepl("Ubuntu", ver)) {
-      if (grepl("22[.]04.*Ubuntu", ver)) {
+      if (grepl("24[.]04.*Ubuntu", ver)) {
+         distro <- "noble" ## Ubuntu 24.04
+      } else if (grepl("22[.]04.*Ubuntu", ver)) {
          distro <- "jammy" ## Ubuntu 22.04
       } else if (grepl("20[.]04.*Ubuntu", ver)) {
          distro <- "focal" ## Ubuntu 20.04
@@ -202,7 +205,7 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
            if (grep(pattern, platform_id)) {
              rhel_id <- gsub(pattern, "\\1", platform_id)
              rhel_id <- sprintf("rh%s", rhel_id)
-             if (rhel_id %in% c("rhel9")) {
+             if (FALSE && rhel_id %in% c("rhel9")) { ## FIXME: Disable on CoreHPC for now
                distro <- rhel_id
              }
            }
@@ -212,6 +215,8 @@ if (!nzchar(Sys.getenv("R_CMD"))) {
 
     if (!is.na(distro)) {
       options(repos = c(
+        ## FIXME: These days, according to https://p3m.dev/client/#/repos/cran/setup?distribution=ubuntu-24.04&r_environment=other, one can use something like:
+        ## PPM = sprintf("https://p3m.dev/cran/latest/bin/linux/%s-%s/%s", distro, R.version["arch"], substr(getRversion(), 1, 3))
         PPM = sprintf("https://packagemanager.posit.co/cran/__linux__/%s/latest", distro),
         getOption("repos")
       ))

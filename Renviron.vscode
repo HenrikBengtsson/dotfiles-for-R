@@ -1,0 +1,13 @@
+# VSCode extension 'reditorsupport.r' does not support the full
+# Renviron syntax and grammar that R supports, e.g.
+#
+#   R_PROFILE_USER=${R_PROFILE_USER:-~/.config/R/startup/Rprofile}
+#
+# and
+# 
+#   R_PROFILE_USER=${R_PROFILE_USER:-${HOME}/.config/R/startup/Rprofile}
+# 
+# are completely ignored. /HB 2026-05-04
+R_PROFILE_USER=${HOME}/.config/R/startup/Rprofile
+
+SECRET=develop

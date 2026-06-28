@@ -1,3 +1,4 @@
+## Open file:// in Chrome, everything else in system default browser
 #' Configure R's HTML help-page server
 #'
 #' Options that are set:
@@ -23,6 +24,7 @@ options(help_type = "html")
 
 
 ## Open file:// in Chrome, everything else in system default browser
+if (FALSE) {
 options(browser = function(url) {
   is_uri <- grepl("^[[:alpha:]]+://", url, ignore.case = TRUE)
   is_file_uri <- grepl("^file://", url, ignore.case = TRUE)
@@ -38,4 +40,4 @@ options(browser = function(url) {
   }
   browseURL(url, browser = bin)
 })
-
+} ## if (FALSE)
