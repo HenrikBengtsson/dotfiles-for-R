@@ -1,5 +1,4 @@
 ## Open file:// in Chrome, everything else in system default browser
-=======
 #' Configure R's HTML help-page server
 #'
 #' Options that are set:
