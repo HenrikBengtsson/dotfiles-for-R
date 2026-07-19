@@ -40,6 +40,7 @@ local({
  - CRANCACHE_DIR: %s\
  - PWD: %s\
  - commandArgs(): %s\
+ - Process ID: %d\
  - .github/workflows/: %s\n"
   }
 
@@ -94,6 +95,7 @@ local({
     Sys.getenv("CRANCACHE_DIR"),
     getwd(),
     paste(sQuote(cmdArgs), collapse = " "),
+    Sys.getpid(),
     paste(basename(gha_files), collapse = ", ")
   ))
 
