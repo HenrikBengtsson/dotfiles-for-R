@@ -53,3 +53,8 @@ sandbox <- local({
     details()
   }
 })
+
+## Enable sandbox by default, if R_SANDBOX=true
+if (isTRUE(as.logical(Sys.getenv("R_SANDBOX", "false")))) {
+  invisible(sandbox("on"))
+}
