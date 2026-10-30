@@ -101,9 +101,9 @@ local({
 
   actions <- c(
     ## GitHub
-    "actions/cache@v4",
-    "actions/checkout@v4",
-    "actions/upload-artifact@v4",
+    "actions/cache@v6",
+    "actions/checkout@v7",
+    "actions/upload-artifact@v7",
     ## r-lib
     "r-lib/actions/setup-pandoc@v2",
     "r-lib/actions/setup-r@v2",
