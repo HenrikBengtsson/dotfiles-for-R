@@ -1,6 +1,6 @@
 tryCatch(startup::startup(all = TRUE), error=function(ex) message(".Rprofile error: ", conditionMessage(ex)))
 
-## Skip in demo mode (TUTORIAL=true), because it outputs a Bioconductor message
+## Skip in demo mode (TUTORIAL=true -> TUTORIAL=TRUE), because it outputs a Bioconductor message
 if (!isTRUE(as.logical(Sys.getenv("TUTORIAL", "false")))) {
   try(BioconductorX::use(unload = TRUE, timemachine = FALSE), silent = TRUE)
 }
