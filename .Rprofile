@@ -9,8 +9,8 @@
 # })
 
 if (!file.exists("~/.Rprofile.skip")) {
-  ## Skip in demo mode (R_DEMO=true), because it outputs a Bioconductor message
-  if (!isTRUE(as.logical(Sys.getenv("R_DEMO", "false")))) {
+  ## Skip in demo mode (TUTORIAL=true), because it outputs a Bioconductor message
+  if (!isTRUE(as.logical(Sys.getenv("TUTORIAL", "false")))) {
     try(BioconductorX::use(unload = TRUE, auto_cleanup = TRUE), silent = TRUE)
   }
 
