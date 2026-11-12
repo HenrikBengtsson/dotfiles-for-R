@@ -9,7 +9,10 @@
 # })
 
 if (!file.exists("~/.Rprofile.skip")) {
-  try(BioconductorX::use(unload = TRUE, auto_cleanup = TRUE), silent = TRUE)
+  ## Skip in demo mode (R_DEMO=true), because it outputs a Bioconductor message
+  if (!isTRUE(as.logical(Sys.getenv("R_DEMO", "false")))) {
+    try(BioconductorX::use(unload = TRUE, auto_cleanup = TRUE), silent = TRUE)
+  }
 
   ## See https://cran.r-project.org/package=startup
   tryCatch(startup::startup(all=TRUE), error=function(ex) {
